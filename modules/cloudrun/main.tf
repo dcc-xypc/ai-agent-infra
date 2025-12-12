@@ -35,7 +35,7 @@ resource "google_cloud_run_v2_service" "app_service" {
 
   # ALB 経由での呼び出しを可能にするためのトラフィック設定
   traffic {
-    type = "PERCENTAGE"
+    type = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
   }
 }
