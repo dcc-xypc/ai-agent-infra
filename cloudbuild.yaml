@@ -1,41 +1,41 @@
 # 文件名: cloudbuild.yaml
-
 options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
 # 1. Terraform 初期化 (Init)
-# Cloud Build には 'hashicorp/terraform' イメージがないため、標準の gcloud/docker 環境で実行
+# -chdir 选项将工作目录切换到 environments/${_ENV_NAME}
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Init'
-  entrypoint: 'sh'
   args:
-    - '-c'
-    - |
-      echo "Initializing Terraform..."
-      # Terraform のバックエンドとして Cloud Storage を使用することを想定
-      terraform init -backend-config="bucket=${_TF_STATE_BUCKET}" -backend-config="prefix=${_ENV_NAME}"
+    - '-chdir=environments/${_ENV_NAME}' # 切换到环境目录
+    - 'init'
+    - '-backend-config=bucket=${_TF_STATE_BUCKET}'
+    - '-backend-config=prefix=${_ENV_NAME}'
 
 # 2. Terraform 構文検証 (Validate)
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Validate'
-  args: ['validate']
+  args:
+    - '-chdir=environments/${_ENV_NAME}' # 切换到环境目录
+    - 'validate'
 
-# 3. Terraform プラン (Plan) - 変更点の確認と保存
+# 3. Terraform プラン (Plan) - 将 plan 文件保存在工作区根目录
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Plan'
   args:
+    - '-chdir=environments/${_ENV_NAME}' # 切换到环境目录
     - 'plan'
-    - '-out=tfplan'
+    - '-out=/workspace/tfplan' # 注意：Plan 文件保存在 Cloud Build 工作区的根目录
     - '-input=false'
-    - './environments/${_ENV_NAME}' # environments/dev フォルダを参照
 
-# 4. Terraform 適用 (Apply) - 実際にリソースを構築
-# (注: 通常、手動承認なしで Apply を実行することは本番環境では避けるべきです)
+# 4. Terraform 適用 (Apply)
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Apply'
   args:
+    - '-chdir=environments/${_ENV_NAME}' # 切换到环境目录
     - 'apply'
     - '-auto-approve'
-    - 'tfplan' # プランファイルを適用
+    - '/workspace/tfplan' # 应用保存在工作区根目录的 plan 文件
+timeout: 1800s
 
