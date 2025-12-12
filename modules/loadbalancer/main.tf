@@ -72,4 +72,6 @@ resource "google_cloud_run_v2_service_iam_member" "invoker_binding" {
 }
 
 # プロジェクト番号を取得するためのデータソース
-data "google_project" "project" {}
+data "google_project" "project" {
+  project_id = var.project_id 
+}
