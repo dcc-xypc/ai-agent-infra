@@ -69,6 +69,7 @@ module "ci_cd_trigger" {
   
   project_id        = var.project_id
   env_name          = var.env_name
+  region                = var.region
   
   github_repo_owner = var.github_repo_owner
   github_repo_name  = var.github_repo_name

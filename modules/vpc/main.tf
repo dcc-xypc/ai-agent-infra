@@ -34,7 +34,7 @@ resource "google_vpc_access_connector" "main_connector" {
   project       = var.project_id
   region        = var.region 
   
-  subnetwork    = google_compute_subnetwork.connector_subnet.self_link
+  subnet    = google_compute_subnetwork.connector_subnet.self_link
   
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
@@ -53,5 +53,5 @@ resource "google_compute_global_address" "private_ip_range" {
 resource "google_service_networking_connection" "vpc_peering_connection" {
   network                 = google_compute_network.vpc_network.self_link
   service                 = "servicenetworking.googleapis.com"
-  reserved_ip_range       = google_compute_global_address.private_ip_range.self_link
+  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
 }
