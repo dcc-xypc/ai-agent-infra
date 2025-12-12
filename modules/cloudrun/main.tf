@@ -20,12 +20,12 @@ resource "google_cloud_run_v2_service" "app_service" {
     
     containers {
       image = "gcr.io/cloudrun/hello" 
+      env {
+        name  = "CLOUD_SQL_CONN_NAME"
+        value = var.db_connection_name
+      }
     }
     
-    env {
-      name  = "CLOUD_SQL_CONN_NAME"
-      value = var.db_connection_name
-    }
     
     vpc_access {
       connector = var.connector_id 
@@ -37,7 +37,6 @@ resource "google_cloud_run_v2_service" "app_service" {
   traffic {
     type = "PERCENTAGE"
     percent = 100
-    latest_revision = true
   }
 }
 
