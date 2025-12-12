@@ -38,7 +38,7 @@ variable "github_repo_name" {
 variable "trigger_branch" {
   description = "ビルドをトリガーするGitブランチです。"
   type        = string
-  default     = "^main$"
+  default     = "main"
 }
 
 # --- ネットワーク変数 ---

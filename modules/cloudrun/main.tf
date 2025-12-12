@@ -2,21 +2,15 @@
 # Cloud Run モジュール: Cloud Run サービス、専用サービスアカウント、IAM を作成
 # -----------------------------------------------------------
 
-# 1. Cloud Run サービス専用サービスアカウント
-resource "google_service_account" "cloudrun_sa" {
-  account_id   = "cloudrun-runner-${var.env_name}"
-  display_name = "Cloud Run Runner Service Account for ${var.env_name}"
-  project      = var.project_id
-}
 
-# 2. Cloud Run サービス (単一リージョンサービス)
+# 1. Cloud Run サービス (単一リージョンサービス)
 resource "google_cloud_run_v2_service" "app_service" {
   name     = "app-service-${var.env_name}" 
   location = var.region 
   project  = var.project_id
 
   template {
-    service_account = google_service_account.cloudrun_sa.email
+    service_account = var.external_cloudrun_sa_email
     
     containers {
       image = "gcr.io/cloudrun/hello" 
@@ -40,21 +34,21 @@ resource "google_cloud_run_v2_service" "app_service" {
   }
 }
 
-# 3. Cloud Run サービスアカウントの IAM 绑定 (Cloud SQL Client)
+# 2. Cloud Run サービスアカウントの IAM 绑定 (Cloud SQL Client)
 resource "google_project_iam_member" "cloudsql_client_binding" {
   project = var.project_id
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${google_service_account.cloudrun_sa.email}"
 }
 
-# 4. Cloud Run サービスアカウントの IAM 绑定 (Serverless VPC Access User)
+# 3. Cloud Run サービスアカウントの IAM 绑定 (Serverless VPC Access User)
 resource "google_project_iam_member" "vpc_access_user_binding" {
   project = var.project_id
   role    = "roles/vpcaccess.user"
   member  = "serviceAccount:${google_service_account.cloudrun_sa.email}"
 }
 
-# 5. Cloud Run の Public Invoker 権限を付与 (ALB からのアクセスを許可)
+# 4. Cloud Run の Public Invoker 権限を付与 (ALB からのアクセスを許可)
 resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
   project  = var.project_id
   location = var.region
