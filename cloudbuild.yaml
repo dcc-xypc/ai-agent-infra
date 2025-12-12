@@ -1,0 +1,37 @@
+# 文件名: cloudbuild.yaml
+steps:
+# 1. Terraform 初期化 (Init)
+# Cloud Build には 'hashicorp/terraform' イメージがないため、標準の gcloud/docker 環境で実行
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Init'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      echo "Initializing Terraform..."
+      # Terraform のバックエンドとして Cloud Storage を使用することを想定
+      terraform init -backend-config="bucket=${_TF_STATE_BUCKET}" -backend-config="prefix=${_ENV_NAME}"
+
+# 2. Terraform 構文検証 (Validate)
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Validate'
+  args: ['validate']
+
+# 3. Terraform プラン (Plan) - 変更点の確認と保存
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Plan'
+  args:
+    - 'plan'
+    - '-out=tfplan'
+    - '-input=false'
+    - './environments/${_ENV_NAME}' # environments/dev フォルダを参照
+
+# 4. Terraform 適用 (Apply) - 実際にリソースを構築
+# (注: 通常、手動承認なしで Apply を実行することは本番環境では避けるべきです)
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Apply'
+  args:
+    - 'apply'
+    - '-auto-approve'
+    - 'tfplan' # プランファイルを適用
+
