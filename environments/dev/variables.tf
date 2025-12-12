@@ -42,6 +42,12 @@ variable "trigger_branch" {
 }
 
 # --- ネットワーク変数 ---
+variable "external_cloudrun_sa_email" {
+  description = "Cloud Run 运行服务账户的邮箱地址，用于执行应用代码。"
+  type        = string
+  default     = "sa-cloud-run-keycloak@q14020-d-toyota-imap-dev.iam.gserviceaccount.com" 
+}
+# --- ネットワーク変数 ---
 variable "vpc_network_name" {
   description = "VPCネットワークのベース名です。"
   type        = string

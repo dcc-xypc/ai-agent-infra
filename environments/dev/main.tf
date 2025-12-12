@@ -44,6 +44,7 @@ module "cloudrun" {
   project_id               = var.project_id
   region                   = var.region
   env_name                 = var.env_name
+  external_cloudrun_sa_email                 = var.external_cloudrun_sa_email
   connector_id             = module.vpc.connector_id
   db_connection_name       = module.cloudsql.instance_connection_name 
 }
