@@ -34,8 +34,9 @@ resource "google_vpc_access_connector" "main_connector" {
   project       = var.project_id
   region        = var.region 
   
-  subnet    = google_compute_subnetwork.connector_subnet.self_link
-  
+  subnet {
+    name = google_compute_subnetwork.connector_subnet.name
+  }
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
 
