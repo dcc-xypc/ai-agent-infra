@@ -1,4 +1,8 @@
 # 文件名: cloudbuild.yaml
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 # 1. Terraform 初期化 (Init)
 # Cloud Build には 'hashicorp/terraform' イメージがないため、標準の gcloud/docker 環境で実行
