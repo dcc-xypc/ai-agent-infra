@@ -43,7 +43,7 @@ module "cloudsql" {
   db_tier_config       = var.db_tier_config
   private_network_link = module.vpc.network_self_link 
   depends_on = [
-    module.vpc
+    module.vpc,
     module.project_apis 
   ]
 }
