@@ -12,7 +12,6 @@ steps:
     - '-backend-config=bucket=${_TF_STATE_BUCKET}'
     - '-backend-config=prefix=${_ENV_NAME}'
     - '-upgrade' 
-  # ⭐️ 关键修改：定义一个卷，用于持久化 .terraform 目录
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'

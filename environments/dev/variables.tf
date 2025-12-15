@@ -70,3 +70,4 @@ variable "reserved_ip_range_name" {
   type        = string
   default     = "google-managed-services-ip-range"
 }
+
