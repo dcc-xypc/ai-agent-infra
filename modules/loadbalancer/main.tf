@@ -60,17 +60,6 @@ resource "google_compute_global_forwarding_rule" "forwarding_rule" {
   ip_address            = google_compute_global_address.lb_ip.self_link
 }
 
-# 7. Cloud Run への IAM 権限付与 (LB サービスアカウントによる呼び出し)
-resource "google_cloud_run_v2_service_iam_member" "invoker_binding" {
-  project  = var.project_id
-  location = var.region
-  name     = var.cloudrun_service_name
-  role     = "roles/run.invoker"
-  
-  # Google のマネージドサービスアカウント (ロードバランサーのプロキシ)
-  member   = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-run.iam.gserviceaccount.com"
-}
-
 # プロジェクト番号を取得するためのデータソース
 data "google_project" "project" {
   project_id = var.project_id 
