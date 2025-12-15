@@ -7,6 +7,12 @@ terraform {
   }
 }
 
+# 0. 调用 API 模块
+module "project_apis" {
+  source = "../../modules/api"
+  project_id = var.project_id
+}
+
 # ---------------------------------------------
 # 1. VPC モジュール
 # ---------------------------------------------
@@ -20,6 +26,9 @@ module "vpc" {
   subnet_cidr              = var.subnet_cidr
   connector_subnet_cidr    = var.connector_subnet_cidr
   reserved_ip_range_name   = var.reserved_ip_range_name
+  depends_on = [
+    module.project_apis 
+  ]
 }
 
 # ---------------------------------------------
@@ -35,6 +44,7 @@ module "cloudsql" {
   private_network_link = module.vpc.network_self_link 
   depends_on = [
     module.vpc
+    module.project_apis 
   ]
 }
 
@@ -50,6 +60,9 @@ module "cloudrun" {
   external_cloudrun_sa_email                 = var.external_cloudrun_sa_email
   connector_id             = module.vpc.connector_id
   db_connection_name       = module.cloudsql.instance_connection_name 
+  depends_on = [
+    module.project_apis 
+  ]
 }
 
 # ---------------------------------------------
@@ -63,6 +76,9 @@ module "loadbalancer" {
   region                = var.region
   
   cloudrun_service_name = module.cloudrun.service_name 
+  depends_on = [
+    module.project_apis 
+  ]
 }
 
 # ---------------------------------------------
@@ -78,4 +94,7 @@ module "loadbalancer" {
 #   github_repo_owner = var.github_repo_owner
 #   github_repo_name  = var.github_repo_name
 #   trigger_branch    = var.trigger_branch
+#   depends_on = [
+#     module.project_apis 
+#   ]
 # }
