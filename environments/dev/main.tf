@@ -68,14 +68,14 @@ module "loadbalancer" {
 # ---------------------------------------------
 # 5. Cloud Build Trigger モジュール
 # ---------------------------------------------
-module "ci_cd_trigger" {
-  source = "../../modules/cloudbuild_trigger"
+# module "ci_cd_trigger" {
+#   source = "../../modules/cloudbuild_trigger"
+#   
+#   project_id        = var.project_id
+#   env_name          = var.env_name
+#   region                = var.region
   
-  project_id        = var.project_id
-  env_name          = var.env_name
-  region                = var.region
-  
-  github_repo_owner = var.github_repo_owner
-  github_repo_name  = var.github_repo_name
-  trigger_branch    = var.trigger_branch
-}
+#   github_repo_owner = var.github_repo_owner
+#   github_repo_name  = var.github_repo_name
+#   trigger_branch    = var.trigger_branch
+# }
