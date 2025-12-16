@@ -1,0 +1,45 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+# 1. Terraform 初期化 (Init)
+# 目的：连接到 GCS 状态后端，获取环境状态
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Init'
+  args:
+    - '-chdir=environments/${_ENV_NAME}'
+    - 'init'
+    - '-backend-config=bucket=${_TF_STATE_BUCKET}'
+    - '-backend-config=prefix=${_ENV_NAME}'
+    - '-upgrade'
+  volumes:
+    - name: 'tf-data'
+      path: '/root/.terraform'
+
+# 2. Terraform 計画 (Destroy Plan)
+# 目的：生成销毁计划 (可选，但推荐用于安全检查)
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Destroy Plan'
+  args:
+    - '-chdir=environments/${_ENV_NAME}'
+    - 'plan'
+    - '-destroy'
+    - '-out=/workspace/tfdestroyplan'
+    - '-input=false'
+  volumes:
+    - name: 'tf-data'
+      path: '/root/.terraform'
+
+# 3. Terraform 適用 (Destroy Apply)
+# 目的：执行销毁操作
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Destroy Apply'
+  args:
+    - '-chdir=environments/${_ENV_NAME}'
+    - 'apply'
+    - '-auto-approve'
+    - '/workspace/tfdestroyplan' # 应用销毁计划
+  volumes:
+    - name: 'tf-data'
+      path: '/root/.terraform'
+
