@@ -41,6 +41,11 @@ module "cloudsql" {
   region               = var.region
   env_name             = var.env_name
   db_tier_config       = var.db_tier_config
+  pg_admin_password    = var.pg_admin_password
+  ai_agent_db_name     = var.ai_agent_db_name
+  keycloak_db_name     = var.keycloak_db_name
+  ai_agent_db_password = var.ai_agent_db_password
+  keycloak_db_password = var.keycloak_db_password
   private_network_link = module.vpc.network_self_link 
   depends_on = [
     module.vpc,
