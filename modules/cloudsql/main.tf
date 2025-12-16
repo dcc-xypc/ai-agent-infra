@@ -17,10 +17,6 @@ resource "google_sql_database_instance" "postgres_instance" {
     ip_configuration {
       ipv4_enabled    = false 
       private_network = var.private_network_link 
-      authorized_networks {
-        name  = "all-internal"
-        value = "10.0.0.0/8" # 示例：允许内部网络访问
-      }
     }
     maintenance_window {
       day  = 7 # Sunday
