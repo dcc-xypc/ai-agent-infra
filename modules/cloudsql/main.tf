@@ -19,6 +19,7 @@ resource "google_sql_database_instance" "postgres_instance" {
       private_network = var.private_network_link 
     }
   }
+  deletion_protection = false
 }
 
 # 2. デフォルトデータベース
