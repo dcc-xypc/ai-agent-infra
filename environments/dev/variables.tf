@@ -22,6 +22,36 @@ variable "db_tier_config" {
   default     = { "dev" = "db-g1-small", "prod" = "db-standard-2" }
 }
 
+variable "pg_admin_password" {
+  description = "The password for the AI Agent database instance."
+  type        = string
+  default     = "!QAZxsw2"
+}
+
+variable "ai_agent_db_name" {
+  description = "The name for the AI Agent application database."
+  type        = string
+  default     = "ai_agent"
+}
+
+variable "ai_agent_db_password" {
+  description = "The password for the AI Agent application database."
+  type        = string
+  default     = "!QAZxsw2"
+}
+
+variable "keycloak_db_name" {
+  description = "The name for the Keycloak authentication database."
+  type        = string
+  default     = "keycloak"
+}
+
+variable "keycloak_db_password" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "!QAZxsw2"
+}
+
 # --- GitHub (標準) トリガー変数 ---
 variable "github_repo_owner" {
   description = "リポジトリを所有するGitHubの組織名またはユーザー名です。"

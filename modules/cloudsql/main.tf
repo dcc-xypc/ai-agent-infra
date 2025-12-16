@@ -4,8 +4,8 @@
 
 # 1. Cloud SQL インスタンス (プライベート IP のみ)
 resource "google_sql_database_instance" "postgres_instance" {
-  database_version = "POSTGRES_15"
-  name             = "pg-instance-${var.env_name}"
+  database_version = "POSTGRES_17"
+  name             = "ai-agent-pg-instance-${var.env_name}"
   project          = var.project_id
   region           = var.region
 
@@ -17,14 +17,81 @@ resource "google_sql_database_instance" "postgres_instance" {
     ip_configuration {
       ipv4_enabled    = false 
       private_network = var.private_network_link 
+      authorized_networks {
+        name  = "all-internal"
+        value = "10.0.0.0/8" # 示例：允许内部网络访问
+      }
+    }
+    maintenance_window {
+      day  = 7 # Sunday
+      hour = 5
     }
   }
   deletion_protection = false
 }
 
-# 2. デフォルトデータベース
-resource "google_sql_database" "default_db" {
-  name     = "app_database"
+resource "google_sql_user" "postgres_admin" {
+  name     = "postgres" 
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
+  password = var.pg_admin_password
+
+  depends_on = [
+    google_sql_database_instance.postgres_instance
+  ]
+}
+
+# ----------------------------------------------------
+# 2. 创建应用程序数据库 (AI Agent)
+# ----------------------------------------------------
+resource "google_sql_database" "ai_agent_db" {
+  name     = var.ai_agent_db_name
+  project  = var.project_id
+  instance = google_sql_database_instance.postgres_instance.name
+  
+  depends_on = [
+    google_sql_database_instance.postgres_instance
+  ]
+}
+
+# ----------------------------------------------------
+# 3. 创建身份验证数据库 (Keycloak)
+# ----------------------------------------------------
+resource "google_sql_database" "keycloak_db" {
+  name     = var.keycloak_db_name
+  project  = var.project_id
+  instance = google_sql_database_instance.postgres_instance.name
+  
+  depends_on = [
+    google_sql_database_instance.postgres_instance
+  ]
+}
+# ----------------------------------------------------
+# 4. 创建 AI Agent 数据库用户
+# ----------------------------------------------------
+resource "google_sql_user" "ai_agent_user" {
+  name     = "ai_agent_user"
+  instance = google_sql_database_instance.postgres_instance.name
+  project  = var.project_id
+  
+  password = var.ai_agent_db_password
+
+  depends_on = [
+    google_sql_database_instance.postgres_instance
+  ]
+}
+
+# ----------------------------------------------------
+# 5. 创建 Keycloak 数据库用户
+# ----------------------------------------------------
+resource "google_sql_user" "keycloak_user" {
+  name     = "keycloak_user"
+  instance = google_sql_database_instance.postgres_instance.name
+  project  = var.project_id
+  
+  password = var.keycloak_db_password
+
+  depends_on = [
+    google_sql_database_instance.postgres_instance
+  ]
 }
