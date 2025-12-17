@@ -17,7 +17,7 @@ variable "keycloak_db_name" {}
 variable "keycloak_db_user" {}
 variable "keycloak_db_password" { sensitive = true }
 
-variable "keycloak_admin_name"
+variable "keycloak_admin_name" {}
 variable "keycloak_admin_password" { sensitive = true }
 variable "keycloak_external_url" {}
 
