@@ -207,8 +207,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   project  = var.project_id
   
   depends_on = [
-    google_cloud_run_v2_service.web_backend_app,
-    null_resource.mirror_proxy_image
+    google_cloud_run_v2_service.web_backend_app
   ]
 
   template {
