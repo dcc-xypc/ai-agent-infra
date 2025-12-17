@@ -214,9 +214,13 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     service_account = var.external_cloudrun_sa_email
     
     containers {
-      image = local.target_proxy_image
+      # image = local.target_proxy_image
+      image = var.default_placeholder_image
       
-      # 修正为严格格式
+      env {
+        name  = "OAUTH2_PROXY_HTTP_ADDRESS"
+        value = "0.0.0.0:8080" 
+      }
       env { 
         name  = "OAUTH2_PROXY_CLIENT_ID" 
         value = var.oauth2_proxy_client_id 
@@ -229,14 +233,15 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_COOKIE_SECRET" 
         value = var.oauth2_proxy_cookie_secret 
       }
-      
+      env {
+        name  = "OAUTH2_PROXY_EMAIL_DOMAINS"
+        value = "*" 
+      }
       # 目标后端是 web-backend-app 的内部 URL
       env {
         name  = "OAUTH2_PROXY_UPSTREAMS"
         value = google_cloud_run_v2_service.web_backend_app.uri
       }
-      
-      # Keycloak OIDC 配置 - 修正为严格格式
       env { 
         name  = "OAUTH2_PROXY_PROVIDER" 
         value = "oidc" 
