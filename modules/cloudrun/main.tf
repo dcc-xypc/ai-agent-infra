@@ -6,7 +6,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
   location = var.region
   project  = var.project_id
 
-  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
     service_account = var.external_cloudrun_sa_email
@@ -141,7 +141,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
   location = var.region
   project  = var.project_id
 
-  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
     service_account = var.external_cloudrun_sa_email
@@ -215,7 +215,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   location = var.region
   project  = var.project_id
   
-  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   depends_on = [
     google_cloud_run_v2_service.web_backend_app
