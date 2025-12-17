@@ -71,12 +71,6 @@ variable "default_placeholder_image" {
   default     = "gcr.io/cloudrun/hello"
 }
 
-variable "oauth2_proxy_image" {
-  description = "OAuth2 Proxy 服务的容器原始镜像。"
-  type        = string
-  default     = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0"
-}
-
 variable "oauth2_proxy_image_gcr" {
   description = "OAuth2 Proxy 服务的目标镜像。"
   type        = string

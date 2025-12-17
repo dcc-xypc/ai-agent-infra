@@ -201,21 +201,6 @@ locals {
   target_proxy_image = var.oauth2_proxy_image_gcr != "" ? var.oauth2_proxy_image_gcr : "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
 }
 
-resource "null_resource" "mirror_proxy_image" {
-  triggers = {
-    source_tag = var.oauth2_proxy_image
-    target_tag = local.target_proxy_image
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      docker pull ${var.oauth2_proxy_image}
-      docker tag ${var.oauth2_proxy_image} ${local.target_proxy_image}
-      docker push ${local.target_proxy_image}
-    EOT
-  }
-}
-
 resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   name     = "oauth2-proxy-app-${var.env_name}"
   location = var.region

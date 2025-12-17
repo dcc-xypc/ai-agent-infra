@@ -77,7 +77,6 @@ module "cloudrun" {
   keycloak_admin_name      = var.keycloak_admin_name
   keycloak_admin_password  = var.keycloak_admin_password
   keycloak_external_url    = var.keycloak_external_url
-  oauth2_proxy_image       = var.oauth2_proxy_image
   oauth2_proxy_image_gcr   = var.oauth2_proxy_image_gcr
   oauth2_proxy_client_id   = var.oauth2_proxy_client_id
   oauth2_proxy_client_secret = var.oauth2_proxy_client_secret

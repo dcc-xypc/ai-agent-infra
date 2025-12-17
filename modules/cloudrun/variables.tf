@@ -16,9 +16,6 @@ variable "external_cloudrun_sa_email" {
 variable "default_placeholder_image" {
   type = string
 }
-variable "oauth2_proxy_image" {
-  type = string
-}
 variable "oauth2_proxy_image_gcr" {
   type = string
 }

@@ -3,6 +3,16 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
+# 0. 转运镜像（即便 GCR 已有，再次 push 也无害）
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'mirror-image'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker pull quay.io/oauth2-proxy/oauth2-proxy:v7.13.0 || exit 1
+        docker tag quay.io/oauth2-proxy/oauth2-proxy:v7.13.0 gcr.io/${PROJECT_ID}/oauth2-proxy:v7.13.0
+        docker push gcr.io/${PROJECT_ID}/oauth2-proxy:v7.13.0
 # 1. Terraform 初期化 (Init)
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Init'
