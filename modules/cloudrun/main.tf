@@ -158,10 +158,10 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
         value = var.keycloak_db_password
       }
       
-      # Keycloak 启动配置 - 修正了 HCL 语法
-      env { 
+      # Keycloak 启动配置 - 修正为严格格式
+      env {
         name  = "KC_DB" 
-        value = "postgres" 
+        value = "postgres"
       }
       env { 
         name  = "KEYCLOAK_ADMIN" 
@@ -210,7 +210,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     containers {
       image = var.oauth2_proxy_image
       
-      # 修正了 HCL 语法
+      # 修正为严格格式
       env { 
         name  = "OAUTH2_PROXY_CLIENT_ID" 
         value = var.oauth2_proxy_client_id 
@@ -230,7 +230,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         value = google_cloud_run_v2_service.web_backend_app.uri
       }
       
-      # Keycloak OIDC 配置 - 修正了 HCL 语法
+      # Keycloak OIDC 配置 - 修正为严格格式
       env { 
         name  = "OAUTH2_PROXY_PROVIDER" 
         value = "oidc" 
