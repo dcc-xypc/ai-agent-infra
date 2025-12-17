@@ -17,7 +17,10 @@ variable "default_placeholder_image" {
   type = string
 }
 variable "oauth2_proxy_image" {
-  default = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0-amd64"
+  type = string
+}
+variable "target_oauth_proxy_image" {
+  type = string
 }
 variable "ai_agent_db_connection_name" {
   type = string

@@ -72,9 +72,15 @@ variable "default_placeholder_image" {
 }
 
 variable "oauth2_proxy_image" {
-  description = "OAuth2 Proxy 服务的容器镜像，必须指向一个实际的 Proxy 镜像。"
+  description = "OAuth2 Proxy 服务的容器原始镜像。"
   type        = string
-  default     = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0-amd64"
+  default     = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0"
+}
+
+variable "target_oauth_proxy_image" {
+  description = "OAuth2 Proxy 服务的目标镜像。"
+  type        = string
+  default     = "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
 }
 
 variable "keycloak_admin_name" {

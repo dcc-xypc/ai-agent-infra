@@ -196,6 +196,21 @@ resource "google_cloud_run_v2_service_iam_member" "auth_keycloak_invoker" {
 # -----------------------------------------------------------------
 # 5. OAuth2 Proxy 服务: oauth2-proxy-app (代理后端认证)
 # -----------------------------------------------------------------
+resource "null_resource" "mirror_proxy_image" {
+  triggers = {
+    source_tag = var.oauth2_proxy_image
+    target_tag = var.target_oauth2_proxy_image
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      docker pull ${var.oauth2_proxy_image}
+      docker tag ${var.oauth2_proxy_image} ${var.target_oauth2_proxy_image}
+      docker push ${var.target_oauth2_proxy_image}
+    EOT
+  }
+}
+
 resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   name     = "oauth2-proxy-app-${var.env_name}"
   location = var.region
@@ -207,7 +222,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     service_account = var.external_cloudrun_sa_email
     
     containers {
-      image = var.oauth2_proxy_image
+      image = var.target_oauth2_proxy_image
       
       # 修正为严格格式
       env { 
