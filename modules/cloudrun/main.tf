@@ -63,7 +63,6 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
         name  = "DB_PASSWORD"
         value = var.ai_agent_db_password
       }
-      
       # 内部服务调用 URL
       env {
         name  = "AI_AGENT_URL"

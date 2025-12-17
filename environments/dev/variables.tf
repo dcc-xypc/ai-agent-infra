@@ -138,6 +138,7 @@ variable "external_cloudrun_sa_email" {
   type        = string
   default     = "sa-cloud-run-keycloak@q14020-d-toyota-imap-dev.iam.gserviceaccount.com" 
 }
+
 # --- ネットワーク変数 ---
 variable "vpc_network_name" {
   description = "VPCネットワークのベース名です。"
