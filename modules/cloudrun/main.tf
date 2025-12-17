@@ -49,7 +49,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       # 数据库连接配置 (AI Agent DB)
       env {
         name  = "CLOUD_SQL_CONN_NAME"
-        value = var.ai_agent_connection_name 
+        value = var.ai_agent_db_connection_name 
       }
       env {
         name  = "DB_NAME"
