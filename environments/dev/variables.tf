@@ -77,7 +77,7 @@ variable "oauth2_proxy_image" {
   default     = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0"
 }
 
-variable "target_oauth_proxy_image" {
+variable "oauth2_proxy_image_gcr" {
   description = "OAuth2 Proxy 服务的目标镜像。"
   type        = string
   default     = ""

@@ -197,9 +197,9 @@ resource "google_cloud_run_v2_service_iam_member" "auth_keycloak_invoker" {
 # 5. OAuth2 Proxy 服务: oauth2-proxy-app (代理后端认证)
 # -----------------------------------------------------------------
 locals {
-  # 如果变量 target_oauth_proxy_image 为空，则使用拼接后的默认值
+  # 如果变量 oauth2_proxy_image_gcr 为空，则使用拼接后的默认值
   # 这样既保留了灵活性，又解决了报错
-  target_proxy_image = var.target_oauth2_proxy_image != "" ? var.target_oauth2_proxy_image : "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
+  target_proxy_image = var.oauth2_proxy_image_gcr != "" ? var.oauth2_proxy_image_gcr : "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
 }
 
 resource "null_resource" "mirror_proxy_image" {
