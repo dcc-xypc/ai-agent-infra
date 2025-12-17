@@ -68,7 +68,7 @@ variable "keycloak_db_password" {
 variable "default_placeholder_image" {
   description = "CI/CD 部署之前使用的占位符镜像。默认使用 Google Cloud Run 官方 hello 镜像。"
   type        = string
-  default     = "gcr.io/cloudrun/container/hello"
+  default     = "gcr.io/cloudrun/hello"
 }
 
 variable "oauth2_proxy_image" {
