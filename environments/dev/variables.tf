@@ -80,7 +80,7 @@ variable "oauth2_proxy_image" {
 variable "target_oauth_proxy_image" {
   description = "OAuth2 Proxy 服务的目标镜像。"
   type        = string
-  default     = "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
+  default     = ""
 }
 
 variable "keycloak_admin_name" {
