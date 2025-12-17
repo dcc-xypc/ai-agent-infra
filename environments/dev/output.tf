@@ -3,9 +3,9 @@ output "cloud_sql_instance_name" {
   value       = module.cloudsql.instance_connection_name
 }
 
-output "app_service_url" {
+output "web_frontend_app_url" {
   description = "Cloud Runサービスの公開URLです。"
-  value       = module.cloudrun.app_service_url
+  value       = module.cloudrun.web_frontend_app_url
 }
 
 output "load_balancer_ip" {

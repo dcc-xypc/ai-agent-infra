@@ -94,7 +94,7 @@ module "loadbalancer" {
   env_name              = var.env_name
   region                = var.region
   
-  cloudrun_service_name = module.cloudrun.service_name 
+  cloudrun_service_name = module.cloudrun.web_frontend_app_name 
   depends_on = [
     module.vpc 
   ]
