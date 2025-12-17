@@ -65,15 +65,19 @@ module "cloudrun" {
   env_name                 = var.env_name
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
   connector_id             = module.vpc.connector_id
-  db_connection_name       = module.cloudsql.instance_connection_name 
+  ai_agent_connection_name       = module.cloudsql.instance_connection_name
+  keycloak_connection_name       = module.cloudsql.instance_connection_name 
   ai_agent_db_name         = var.ai_agent_db_name
   ai_agent_db_user         = var.ai_agent_db_user
   ai_agent_db_password     = var.ai_agent_db_password
   keycloak_db_name         = var.keycloak_db_name
   keycloak_db_user         = var.keycloak_db_user
   keycloak_db_password     = var.keycloak_db_password
+  keycloak_admin_name      = var.keycloak_admin_name
+  keycloak_external_url    = var.keycloak_external_url
   oauth2_proxy_client_id   = var.oauth2_proxy_client_id
   oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
+  oauth2_proxy_cookie_secret = var.oauth2_proxy_cookie_secret
   depends_on = [
     module.cloudsql 
   ]
