@@ -64,6 +64,7 @@ module "cloudrun" {
   region                   = var.region
   env_name                 = var.env_name
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
+  default_placeholder_image = var.default_placeholder_image
   connector_id             = module.vpc.connector_id
   ai_agent_db_connection_name       = module.cloudsql.instance_connection_name
   keycloak_db_connection_name       = module.cloudsql.instance_connection_name 
