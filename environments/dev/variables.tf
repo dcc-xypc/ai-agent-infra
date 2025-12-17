@@ -34,6 +34,12 @@ variable "ai_agent_db_name" {
   default     = "ai_agent"
 }
 
+variable "ai_agent_db_user" {
+  description = "The user for the AI Agent application database."
+  type        = string
+  default     = "ai_agent_user"
+}
+
 variable "ai_agent_db_password" {
   description = "The password for the AI Agent application database."
   type        = string
@@ -44,6 +50,12 @@ variable "keycloak_db_name" {
   description = "The name for the Keycloak authentication database."
   type        = string
   default     = "keycloak"
+}
+
+variable "keycloak_db_user" {
+  description = "The user for the Keycloak authentication database."
+  type        = string
+  default     = "keycloak_user"
 }
 
 variable "keycloak_db_password" {

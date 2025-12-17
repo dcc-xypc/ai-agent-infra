@@ -49,7 +49,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       # 数据库连接配置 (AI Agent DB)
       env {
         name  = "CLOUD_SQL_CONN_NAME"
-        value = var.db_connection_name 
+        value = var.ai_agent_connection_name 
       }
       env {
         name  = "DB_NAME"
@@ -57,7 +57,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       }
       env {
         name  = "DB_USER"
-        value = var.ai_agent_user_name
+        value = var.ai_agent_db_user
       }
       env {
         name  = "DB_PASSWORD"
@@ -151,7 +151,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env {
         name  = "KC_DB_USERNAME"
-        value = var.keycloak_user_name
+        value = var.keycloak_db_user
       }
       env {
         name  = "KC_DB_PASSWORD"
@@ -165,7 +165,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env { 
         name  = "KEYCLOAK_ADMIN" 
-        value = "keycloak_admin_user" 
+        value = var.keycloak_admin_name
       }
       env { 
         name  = "KEYCLOAK_ADMIN_PASSWORD" 

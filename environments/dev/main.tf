@@ -44,6 +44,8 @@ module "cloudsql" {
   pg_admin_password    = var.pg_admin_password
   ai_agent_db_name     = var.ai_agent_db_name
   keycloak_db_name     = var.keycloak_db_name
+  ai_agent_db_user     = var.ai_agent_db_user
+  keycloak_db_user     = var.keycloak_db_user
   ai_agent_db_password = var.ai_agent_db_password
   keycloak_db_password = var.keycloak_db_password
   private_network_link = module.vpc.network_self_link 
@@ -61,15 +63,19 @@ module "cloudrun" {
   project_id               = var.project_id
   region                   = var.region
   env_name                 = var.env_name
-  external_cloudrun_sa_email                 = var.external_cloudrun_sa_email
+  external_cloudrun_sa_email
+                           = var.external_cloudrun_sa_email
   connector_id             = module.vpc.connector_id
   db_connection_name       = module.cloudsql.instance_connection_name 
-  ai_agent_db_name         = module.cloudsql.ai_agent_db_name
-  ai_agent_db_password     = module.cloudsql.ai_agent_db_password
-  keycloak_db_name         = module.cloudsql.keycloak_db_name
-  keycloak_db_password     = module.cloudsql.keycloak_db_password
+  ai_agent_db_name         = var.ai_agent_db_name
+  ai_agent_db_user         = var.ai_agent_db_user
+  ai_agent_db_password     = var.ai_agent_db_password
+  keycloak_db_name         = var.keycloak_db_name
+  keycloak_db_user         = var.keycloak_db_user
+  keycloak_db_password     = var.keycloak_db_password
   oauth2_proxy_client_id   = var.oauth2_proxy_client_id
-  oauth2_proxy_client_secret                 = var.oauth2_proxy_client_secret
+  oauth2_proxy_client_secret
+                           = var.oauth2_proxy_client_secret
   depends_on = [
     module.cloudsql 
   ]
