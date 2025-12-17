@@ -198,21 +198,20 @@ resource "google_cloud_run_v2_service_iam_member" "auth_keycloak_invoker" {
 # -----------------------------------------------------------------
 locals {
   # 如果变量 oauth2_proxy_image_gcr 为空，则使用拼接后的默认值
-  # 这样既保留了灵活性，又解决了报错
   target_proxy_image = var.oauth2_proxy_image_gcr != "" ? var.oauth2_proxy_image_gcr : "gcr.io/${var.project_id}/oauth2-proxy:v7.13.0"
 }
 
 resource "null_resource" "mirror_proxy_image" {
   triggers = {
     source_tag = var.oauth2_proxy_image
-    target_tag = var.target_proxy_image
+    target_tag = local.target_proxy_image
   }
 
   provisioner "local-exec" {
     command = <<EOT
       docker pull ${var.oauth2_proxy_image}
-      docker tag ${var.oauth2_proxy_image} ${var.target_proxy_image}
-      docker push ${var.target_proxy_image}
+      docker tag ${var.oauth2_proxy_image} ${local.target_proxy_image}
+      docker push ${local.target_proxy_image}
     EOT
   }
 }
@@ -222,13 +221,16 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   location = var.region
   project  = var.project_id
   
-  depends_on = [google_cloud_run_v2_service.web_backend_app] 
+  depends_on = [
+    google_cloud_run_v2_service.web_backend_app,
+    null_resource.mirror_proxy_image
+  ]
 
   template {
     service_account = var.external_cloudrun_sa_email
     
     containers {
-      image = var.target_proxy_image
+      image = local.target_proxy_image
       
       # 修正为严格格式
       env { 
