@@ -158,10 +158,19 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
         value = var.keycloak_db_password
       }
       
-      # Keycloak 启动配置
-      env { name  = "KC_DB" value = "postgres" }
-      env { name  = "KEYCLOAK_ADMIN" value = "keycloak_admin_user" }
-      env { name  = "KEYCLOAK_ADMIN_PASSWORD" value = var.keycloak_admin_password }
+      # Keycloak 启动配置 - 修正了 HCL 语法
+      env { 
+        name  = "KC_DB" 
+        value = "postgres" 
+      }
+      env { 
+        name  = "KEYCLOAK_ADMIN" 
+        value = "keycloak_admin_user" 
+      }
+      env { 
+        name  = "KEYCLOAK_ADMIN_PASSWORD" 
+        value = var.keycloak_admin_password 
+      }
       # ⚠️ 注意：您可能还需要设置 KC_HOSTNAME_URL 等变量
     }
     
@@ -201,9 +210,19 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     containers {
       image = var.oauth2_proxy_image
       
-      env { name  = "OAUTH2_PROXY_CLIENT_ID" value = var.oauth2_proxy_client_id }
-      env { name  = "OAUTH2_PROXY_CLIENT_SECRET" value = var.oauth2_proxy_client_secret }
-      env { name  = "OAUTH2_PROXY_COOKIE_SECRET" value = var.oauth2_proxy_cookie_secret }
+      # 修正了 HCL 语法
+      env { 
+        name  = "OAUTH2_PROXY_CLIENT_ID" 
+        value = var.oauth2_proxy_client_id 
+      }
+      env { 
+        name  = "OAUTH2_PROXY_CLIENT_SECRET" 
+        value = var.oauth2_proxy_client_secret 
+      }
+      env { 
+        name  = "OAUTH2_PROXY_COOKIE_SECRET" 
+        value = var.oauth2_proxy_cookie_secret 
+      }
       
       # 目标后端是 web-backend-app 的内部 URL
       env {
@@ -211,8 +230,11 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         value = google_cloud_run_v2_service.web_backend_app.uri
       }
       
-      # Keycloak OIDC 配置
-      env { name  = "OAUTH2_PROXY_PROVIDER" value = "oidc" }
+      # Keycloak OIDC 配置 - 修正了 HCL 语法
+      env { 
+        name  = "OAUTH2_PROXY_PROVIDER" 
+        value = "oidc" 
+      }
       env {
         name  = "OAUTH2_PROXY_OIDC_ISSUER_URL"
         # ⚠️ 替换为您的实际 Realm URL
