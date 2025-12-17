@@ -6,6 +6,8 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
   location = var.region
   project  = var.project_id
 
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
+
   template {
     service_account = var.external_cloudrun_sa_email
     
@@ -39,10 +41,13 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   name     = "web-backend-app-${var.env_name}"
   location = var.region
   project  = var.project_id
+    
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   template {
     service_account = var.external_cloudrun_sa_email
-    
+
+
     containers {
       image = var.default_placeholder_image
       
@@ -98,6 +103,8 @@ resource "google_cloud_run_v2_service" "ai_agent_engine_app" {
   location = var.region
   project  = var.project_id
 
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+
   template {
     service_account = var.external_cloudrun_sa_email
     
@@ -133,6 +140,8 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
   name     = "auth-keycloak-app-${var.env_name}"
   location = var.region
   project  = var.project_id
+
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
 
   template {
     service_account = var.external_cloudrun_sa_email
@@ -206,6 +215,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   location = var.region
   project  = var.project_id
   
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCING"
+
   depends_on = [
     google_cloud_run_v2_service.web_backend_app
   ]
