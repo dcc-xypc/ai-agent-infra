@@ -66,7 +66,7 @@ resource "google_sql_database" "keycloak_db" {
 # 4. 创建 AI Agent 数据库用户
 # ----------------------------------------------------
 resource "google_sql_user" "ai_agent_user" {
-  name     = "ai_agent_user"
+  name     = var.ai_agent_db_user
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
   
@@ -81,7 +81,7 @@ resource "google_sql_user" "ai_agent_user" {
 # 5. 创建 Keycloak 数据库用户
 # ----------------------------------------------------
 resource "google_sql_user" "keycloak_user" {
-  name     = "keycloak_user"
+  name     = var.keycloak_db_user
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
   
