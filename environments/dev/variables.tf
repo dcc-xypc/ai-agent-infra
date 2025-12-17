@@ -52,6 +52,55 @@ variable "keycloak_db_password" {
   default     = "!QAZxsw2"
 }
 
+# --- Cloud Run変数 ---
+variable "default_placeholder_image" {
+  description = "CI/CD 部署之前使用的占位符镜像。默认使用 Google Cloud Run 官方 hello 镜像。"
+  type        = string
+  default     = "gcr.io/cloudrun/container/hello"
+}
+
+variable "oauth2_proxy_image" {
+  description = "OAuth2 Proxy 服务的容器镜像，必须指向一个实际的 Proxy 镜像。"
+  type        = string
+  default     = "quay.io/oauth2-proxy/oauth2-proxy:v7.13.0-amd64"
+}
+
+variable "keycloak_admin_name" {
+  description = "The name for the Keycloak authentication database."
+  type        = string
+  default     = "kcadmin"
+}
+
+variable "keycloak_admin_password" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "!QAZxsw2"
+}
+
+variable "keycloak_external_url" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "keycloak.internal.need.change"
+}
+
+variable "oauth2_proxy_client_id" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "dummy"
+}
+
+variable "oauth2_proxy_client_secret" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "dummy"
+}
+
+variable "oauth2_proxy_cookie_secret" {
+  description = "The password for the Keycloak authentication database."
+  type        = string
+  default     = "dummy"
+}
+
 # --- GitHub (標準) トリガー変数 ---
 variable "github_repo_owner" {
   description = "リポジトリを所有するGitHubの組織名またはユーザー名です。"
