@@ -27,3 +27,13 @@ output "auth_keycloak_app_url" {
   description = "Cloud Runサービスの公開URLです（auth-keycloak-app）。"
   value       = google_cloud_run_v2_service.auth_keycloak_app.uri
 }
+
+output "oauth2_proxy_app_name" {
+  description = "Cloud Runサービスの名前です（auth-keycloak-app）。"
+  value       = google_cloud_run_v2_service.oauth2_proxy_app.name
+}
+
+output "oauth2_proxy_app_url" {
+  description = "Cloud Runサービスの公開URLです（auth-keycloak-app）。"
+  value       = google_cloud_run_v2_service.oauth2_proxy_app.uri
+}

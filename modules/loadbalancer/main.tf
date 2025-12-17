@@ -18,7 +18,7 @@ resource "google_compute_region_network_endpoint_group" "frontend_neg" {
   region                = var.region
   network_endpoint_type = "SERVERLESS"
   cloud_run {
-    service = var.frontend_service_name
+    service = module.cloudrun.web_frontend_app_name
   }
 }
 
@@ -29,7 +29,7 @@ resource "google_compute_region_network_endpoint_group" "proxy_neg" {
   region                = var.region
   network_endpoint_type = "SERVERLESS"
   cloud_run {
-    service = var.proxy_service_name
+    service = var.oauth2_proxy_app_name
   }
 }
 
@@ -40,7 +40,7 @@ resource "google_compute_region_network_endpoint_group" "keycloak_neg" {
   region                = var.region
   network_endpoint_type = "SERVERLESS"
   cloud_run {
-    service = var.keycloak_service_name
+    service = var.auth_keycloak_app_name
   }
 }
 
