@@ -7,6 +7,12 @@ variable "env_name" {
 variable "region" {
   type = string
 }
-variable "cloudrun_service_name" {
+variable "web_frontend_app_name" {
+  type = string
+}
+variable "oauth2_proxy_app_name" {
+  type = string
+}
+variable "auth_keycloak_app_name" {
   type = string
 }

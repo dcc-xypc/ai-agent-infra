@@ -18,7 +18,7 @@ resource "google_compute_region_network_endpoint_group" "frontend_neg" {
   region                = var.region
   network_endpoint_type = "SERVERLESS"
   cloud_run {
-    service = module.cloudrun.web_frontend_app_name
+    service = var.web_frontend_app_name
   }
 }
 

@@ -97,9 +97,13 @@ module "loadbalancer" {
   env_name              = var.env_name
   region                = var.region
   
-  cloudrun_service_name = module.cloudrun.web_frontend_app_name 
+  web_frontend_app_name = module.cloudrun.web_frontend_app_name
+  oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
+  auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
+
   depends_on = [
-    module.vpc 
+    module.vpc,
+    module.cloudrun
   ]
 }
 
