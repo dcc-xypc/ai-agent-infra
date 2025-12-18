@@ -6,6 +6,9 @@
 resource "google_compute_global_address" "lb_ip" {
   name    = "lb-ip-${var.env_name}"
   project = var.project_id
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # 2. Serverless NEG (ネットワークエンドポイントグループ)
