@@ -55,6 +55,9 @@ variable "keycloak_admin_password" {
 variable "keycloak_external_url" {
   type = string
 }
+variable "auth_domain" {
+  type = string
+}
 
 variable "oauth2_proxy_client_id" {
   type = string

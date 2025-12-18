@@ -67,6 +67,7 @@ module "cloudrun" {
   default_placeholder_image = var.default_placeholder_image
   connector_id             = module.vpc.connector_id
   ai_agent_db_connection_name       = module.cloudsql.instance_connection_name
+  auth_domain           = var.auth_domain
   keycloak_db_connection_name       = module.cloudsql.instance_connection_name 
   ai_agent_db_name         = var.ai_agent_db_name
   ai_agent_db_user         = var.ai_agent_db_user
