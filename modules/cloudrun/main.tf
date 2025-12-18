@@ -10,6 +10,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
 
   template {
     service_account = var.external_cloudrun_sa_email
+    session_affinity = true
     
     containers {
       image = var.default_placeholder_image
@@ -159,43 +160,122 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
 
   template {
     service_account = var.external_cloudrun_sa_email
+    session_affinity = true 
+    scaling {
+      min_instance_count = 1
+      max_instance_count = 2
+    }
     
     containers {
       image = var.default_placeholder_image
-      
-      env {
-        name  = "CLOUD_SQL_CONN_NAME"
-        value = var.keycloak_db_connection_name 
-      }
-      env {
-        name  = "KC_DB_DATABASE"
-        value = var.keycloak_db_name
-      }
-      env {
-        name  = "KC_DB_USERNAME"
-        value = var.keycloak_db_user
-      }
-      env {
-        name  = "KC_DB_PASSWORD"
-        value = var.keycloak_db_password
+      volume_mounts {
+        name       = "cloudsql"
+        mount_path = "/cloudsql"
       }
       
-      # Keycloak 启动配置 - 修正为严格格式
+      env {
+        name  = "ENVIRONMENT" 
+        value = "GCP"
+      }
+      env {
+        name  = "LOGGING_CONSOLE" 
+        value = true
+      }
       env {
         name  = "KC_DB" 
         value = "postgres"
       }
+      env {
+        name  = "KC_DB_URL"
+        value = "jdbc:postgresql://localhost:5432/${var.keycloak_db_name}?cloudSqlInstance=${var.keycloak_db_connection_name}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+      }
+      env {
+        name  = "KC_DB_USERNAME" 
+        value = var.keycloak_db_user
+      }
+      env {
+        name  = "KC_DB_PASSWORD" 
+        value = var.keycloak_db_password
+      }
       env { 
-        name  = "KEYCLOAK_ADMIN" 
+        name  = "KC_BOOTSTRAP_ADMIN_USERNAME" 
         value = var.keycloak_admin_name
       }
       env { 
-        name  = "KEYCLOAK_ADMIN_PASSWORD" 
+        name  = "KC_BOOTSTRAP_ADMIN_PASSWORD" 
         value = var.keycloak_admin_password 
       }
-      # ⚠️ 注意：您可能还需要设置 KC_HOSTNAME_URL 等变量
+      env { 
+        name  = "KC_PROXY" 
+        value = "edge"
+      }
+      env { 
+        name  = "KC_HOSTNAME" 
+        value = var.auth_domain
+      }
+      env { 
+        name  = "KC_HOSTNAME_URL" 
+        value = https://${var.auth_domain}
+      }
+      env { 
+        name  = "KC_HOSTNAME_STRICT_HTTPS" 
+        value = "true"
+      }
+      env { 
+        name  = "KC_CACHE_STACK" 
+        value = "jdbc-ping"
+      }
+      env { 
+        name  = "KC_BIND_ADDRESS" 
+        value = "0.0.0.0"
+      }
+      env {
+        name  = "KC_HTTP_ENABLED"
+        value = "true"
+      }
+      env {
+        name  = "KC_HTTP_PORT"
+        value = "8080"
+      }
+      env {
+        name  = "KC_PROXY"
+        value = "edge"
+      }
+      env {
+        name  = "KC_PROXY_HEADERS"
+        value = "forwarded"
+      }
+
+      # 数据库与事务配置
+      env {
+        name  = "KC_TRANSACTION_MODE"
+        value = "non-xa"
+      }
+      env {
+        name  = "KC_TRANSACTION_XA_ENABLED"
+        value = "false"
+      }
+      env {
+        name  = "KC_DB_DIALECT"
+        value = "org.hibernate.dialect.PostgreSQLDialect"
+      }
+      env {
+        name  = "KC_DB_DRIVER"
+        value = "org.postgresql.Driver"
+      }
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "2Gi" # Keycloak 启动较重，建议至少 2Gi
+        }
+      }
     }
-    
+    volumes {
+      name = "cloudsql"
+      cloud_sql_instance {
+        instances = [var.keycloak_db_connection_name]
+      }
+    } 
     vpc_access {
       connector = var.connector_id
       egress    = "ALL_TRAFFIC"
@@ -242,6 +322,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
 
   template {
     service_account = var.external_cloudrun_sa_email
+    session_affinity = true
     
     containers {
       # image = local.target_proxy_image

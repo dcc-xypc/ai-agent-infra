@@ -52,6 +52,8 @@ resource "google_compute_backend_service" "frontend_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  session_affinity      = "GENERATED_COOKIE"
+  affinity_cookie_ttl_sec = 300
   backend {
     group = google_compute_region_network_endpoint_group.frontend_neg.id
   }
@@ -62,6 +64,8 @@ resource "google_compute_backend_service" "proxy_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  session_affinity      = "GENERATED_COOKIE"
+  affinity_cookie_ttl_sec = 300
   backend {
     group = google_compute_region_network_endpoint_group.proxy_neg.id
   }
@@ -72,6 +76,8 @@ resource "google_compute_backend_service" "keycloak_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  session_affinity      = "GENERATED_COOKIE"
+  affinity_cookie_ttl_sec = 300
   backend {
     group = google_compute_region_network_endpoint_group.keycloak_neg.id
   }
