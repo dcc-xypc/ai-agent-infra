@@ -215,7 +215,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env { 
         name  = "KC_HOSTNAME_URL" 
-        value = https://${var.auth_domain}
+        value = "https://${var.auth_domain}"
       }
       env { 
         name  = "KC_HOSTNAME_STRICT_HTTPS" 
