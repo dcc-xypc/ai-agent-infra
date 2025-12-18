@@ -95,6 +95,8 @@ module "loadbalancer" {
   project_id            = var.project_id
   env_name              = var.env_name
   region                = var.region
+  auth_domain           = var.auth_domain
+  tenant_domain         = var.tenant_domain
   
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
