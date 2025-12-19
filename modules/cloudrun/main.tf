@@ -187,7 +187,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env {
         name  = "KC_DB_URL"
-        value = "jdbc:postgresql://host.internal/${var.keycloak_db_name}?cloudSqlInstance=${var.keycloak_db_connection_name}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+        value = "jdbc:postgresql:///${var.keycloak_db_name}?cloudSqlInstance=${var.keycloak_db_connection_name}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
       }
       env {
         name  = "KC_DB_USERNAME" 
