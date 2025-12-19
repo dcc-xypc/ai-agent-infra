@@ -21,11 +21,11 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
       egress    = "ALL_TRAFFIC"
     }
   }
-  lifecycle {
-    ignore_changes = [
-      template[0].containers[0].image,
-    ]
-  }
+#  lifecycle {
+#    ignore_changes = [
+#      template[0].containers[0].image,
+#    ]
+#  }
   traffic {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
@@ -167,7 +167,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
     }
     
     containers {
-      image = var.default_placeholder_image
+      image = "gcr.io/q14020-d-toyota-imap-dev/auth-keycloak-app:d0a0e2e"
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"
@@ -179,7 +179,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env {
         name  = "LOGGING_CONSOLE" 
-        value = true
+        value = "true"
       }
       env {
         name  = "KC_DB" 
@@ -204,10 +204,6 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       env { 
         name  = "KC_BOOTSTRAP_ADMIN_PASSWORD" 
         value = var.keycloak_admin_password 
-      }
-      env { 
-        name  = "KC_PROXY" 
-        value = "edge"
       }
       env { 
         name  = "KC_HOSTNAME" 
