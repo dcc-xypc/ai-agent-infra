@@ -187,8 +187,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env {
         name  = "KC_DB_URL"
-#       value = "jdbc:postgresql:///${var.keycloak_db_name}?cloudSqlInstance=${var.keycloak_db_connection_name}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-        value = "jdbc:postgresql:///${var.keycloak_db_name}?host=/cloudsql/${var.keycloak_db_connection_name}"
+        value = "jdbc:postgresql:///${var.keycloak_db_name}?cloudSqlInstance=${var.keycloak_db_connection_name}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
       }
       env {
         name  = "KC_DB_USERNAME" 
@@ -279,11 +278,11 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
     }
   }
 
-# lifecycle {
-#   ignore_changes = [
-#     template[0].containers[0].image,
-#   ]
-# }
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+    ]
+  }
   traffic {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
