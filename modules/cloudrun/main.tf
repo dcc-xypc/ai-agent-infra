@@ -21,11 +21,11 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
       egress    = "ALL_TRAFFIC"
     }
   }
-#  lifecycle {
-#    ignore_changes = [
-#      template[0].containers[0].image,
-#    ]
-#  }
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+    ]
+  }
   traffic {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
