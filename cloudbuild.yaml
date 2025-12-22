@@ -70,24 +70,28 @@ steps:
     - |
       if [ "${_ENABLE_OPS_NAT}" = "true" ]; then
         echo "检测到 NAT 已开启，开始自动化安装工具..."
-        
-        # 重试循环，确保 SSH 服务已启动
-        for i in {1..10}; do
-          gcloud compute ssh ops-vm-${_ENV_NAME} \
-            --tunnel-through-iap \
-            --project=${PROJECT_ID} \
-            --zone=asia-northeast1-a \
-            --quiet \
-            --command="sudo apt-get update && sudo apt-get install -y postgresql-client" && {
-              echo "PostgreSQL 客户端安装成功！"
-              break
-            } || {
-              echo "等待 VM 或 IAP 隧道就绪... ($i/10)"
-              sleep 10
-            }
+        SUCCESS=false
+        for i in $$(seq 1 10); do
+          echo "尝试连接 VM (第 $$i 次)..."
+          # 使用 --quiet 确保非交互，并增加具体的 SSH 参数
+          if gcloud compute ssh ops-vm-$${_ENV_NAME} \
+              --tunnel-through-iap \
+              --project=$${PROJECT_ID} \
+              --zone=asia-northeast1-a \
+              --quiet \
+              --command="sudo apt-get update && sudo apt-get install -y postgresql-client"; then
+            echo "安装成功！"
+            SUCCESS=true
+            break
+          fi
+          echo "连接失败，10秒后重试..."
+          sleep 10
         done
-      else
-        echo "NAT 未开启，跳过安装步骤。"
+
+        if [ "$$SUCCESS" = "false" ]; then
+          echo "错误：无法通过 IAP 连接到 VM。"
+          exit 1
+        fi
       fi
       
 timeout: 1800s

@@ -16,6 +16,9 @@ resource "google_compute_instance" "ops_vm" {
   network_interface {
     subnetwork = var.ops_subnet_id
   }
+  metadata = {
+    enable-oslogin = "FALSE"
+  }
 }
 
 # 2. IAP 专用防火墙规则

@@ -77,3 +77,10 @@ resource "google_project_service" "logging" {
   service = "logging.googleapis.com"
   disable_on_destroy = false
 }
+
+resource "google_project_service" "logging" {
+  # 用于日志记录
+  project = var.project_id
+  service = "iap.googleapis.com"
+  disable_on_destroy = false
+}
