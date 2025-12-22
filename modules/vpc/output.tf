@@ -19,6 +19,6 @@ output "ops_subnet_id" {
 }
 output "nat_status" {
   # 返回 NAT 资源的 ID，如果 NAT 没开启则返回 null
-  value = var.enable_ops_nat ? google_compute_router_nat.nat[0].id : null
+  value = var.enable_ops_nat ? google_compute_router_nat.nat[0].id : ""
 }
 
