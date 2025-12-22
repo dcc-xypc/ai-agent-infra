@@ -143,7 +143,7 @@ variable "external_cloudrun_sa_email" {
 variable "vpc_network_name" {
   description = "VPCネットワークのベース名です。"
   type        = string
-  default     = "vpc-main"
+  default     = "iac-custom-vpc"
 }
 
 variable "subnet_cidr" {
