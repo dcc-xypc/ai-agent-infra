@@ -46,6 +46,7 @@ steps:
     - '-input=false'
   env:
     - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
+    - 'TF_VAR_env_name=${_ENV_NAME}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
@@ -58,6 +59,8 @@ steps:
     - 'apply'
     - '-auto-approve'
     - '/workspace/tfplan'
+  env:
+    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
