@@ -48,7 +48,7 @@ resource "null_resource" "install_psql" {
   depends_on = [
     google_compute_instance.ops_vm,
     # 假设你的防火墙资源名是这个，请根据实际修改
-    google_compute_firewall.allow_iap_ssh 
+    google_compute_firewall.allow_iap_ssh_ops 
   ]
 
   triggers = {
