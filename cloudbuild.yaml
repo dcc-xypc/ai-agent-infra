@@ -68,7 +68,9 @@ steps:
   args:
     - '-c'
     - |
-      if [ "${_ENABLE_OPS_NAT}" = "true" ]; then
+      # 显式设置项目 ID 防止 gcloud 迷路
+      gcloud config set project $${PROJECT_ID}
+      if [ "$${_ENABLE_OPS_NAT}" = "true" ]; then
         echo "检测到 NAT 已开启，开始自动化安装工具..."
         SUCCESS=false
         for i in $$(seq 1 10); do
