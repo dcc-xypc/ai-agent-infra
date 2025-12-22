@@ -16,15 +16,6 @@ resource "google_compute_instance" "ops_vm" {
   network_interface {
     subnetwork = var.ops_subnet_id
   }
-
-  metadata = {
-    enable-oslogin = "TRUE"
-  }
-
-  metadata_startup_script = <<-EOT
-    apt-get update
-    apt-get install -y postgresql-client redis-tools dnsutils telnet
-  EOT
 }
 
 # 2. IAP 专用防火墙规则
@@ -43,3 +34,24 @@ resource "google_compute_firewall" "allow_iap_ssh_ops" {
   target_tags   = ["ops-admin"]
 }
 
+resource "null_resource" "remote_install" {
+  # 只有当 NAT ID 不为空时才执行
+  count = var.nat_id != null ? 1 : 0
+
+  triggers = {
+    # 如果 VM 重建了，或者 NAT 重新开启了，就触发安装
+    instance_id = google_compute_instance.ops_vm.id
+    nat_id      = var.nat_id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      gcloud compute ssh ${google_compute_instance.ops_vm.name} \
+        --tunnel-through-iap \
+        --project=${var.project_id} \
+        --zone=${google_compute_instance.ops_vm.zone} \
+        --quiet \
+        --command="sudo apt-get update && sudo apt-get install -y postgresql-client"
+    EOT
+  }
+}
