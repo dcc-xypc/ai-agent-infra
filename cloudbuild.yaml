@@ -62,31 +62,32 @@ steps:
     - name: 'tf-data'
       path: '/root/.terraform'
 
+# 5. PG Client install
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        if [ "${_ENABLE_OPS_NAT}" = "true" ]; then
-          echo "检测到 NAT 已开启，开始自动化安装工具..."
-          
-          # 重试循环，确保 SSH 服务已启动
-          for i in {1..10}; do
-            gcloud compute ssh ops-vm-${_ENV} \
-              --tunnel-through-iap \
-              --project=${PROJECT_ID} \
-              --zone=asia-northeast1-a \
-              --quiet \
-              --command="sudo apt-get update && sudo apt-get install -y postgresql-client" && {
-                echo "PostgreSQL 客户端安装成功！"
-                break
-              } || {
-                echo "等待 VM 或 IAP 隧道就绪... ($i/10)"
-                sleep 10
-              }
-          done
-        else
-          echo "NAT 未开启，跳过安装步骤。"
-        fi
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      if [ "${_ENABLE_OPS_NAT}" = "true" ]; then
+        echo "检测到 NAT 已开启，开始自动化安装工具..."
+        
+        # 重试循环，确保 SSH 服务已启动
+        for i in {1..10}; do
+          gcloud compute ssh ops-vm-${_ENV_NAME} \
+            --tunnel-through-iap \
+            --project=${PROJECT_ID} \
+            --zone=asia-northeast1-a \
+            --quiet \
+            --command="sudo apt-get update && sudo apt-get install -y postgresql-client" && {
+              echo "PostgreSQL 客户端安装成功！"
+              break
+            } || {
+              echo "等待 VM 或 IAP 隧道就绪... ($i/10)"
+              sleep 10
+            }
+        done
+      else
+        echo "NAT 未开启，跳过安装步骤。"
+      fi
       
 timeout: 1800s
