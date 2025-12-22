@@ -78,7 +78,7 @@ resource "google_project_service" "logging" {
   disable_on_destroy = false
 }
 
-resource "google_project_service" "logging" {
+resource "google_project_service" "iap" {
   # 用于日志记录
   project = var.project_id
   service = "iap.googleapis.com"
