@@ -13,7 +13,7 @@ resource "google_compute_network" "vpc_network" {
 resource "google_compute_subnetwork" "app_subnet" {
   name          = "${var.vpc_network_name}-subnet-${var.env_name}"
   project       = var.project_id
-  ip_cidr_range = var.subnet_cidr
+  ip_cidr_range = var.subnet_cidr_app
   region        = var.region 
   network       = google_compute_network.vpc_network.self_link
 }
@@ -21,14 +21,14 @@ resource "google_compute_subnetwork" "app_subnet" {
 # 3. devops vm 専用サブネット
 resource "google_compute_subnetwork" "ops_subnet" {
   name          = "sb-ops-${var.env_name}"
-  ip_cidr_range = "10.10.10.0/24" # 选一个不冲突的网段
+  project       = var.project_id
+  ip_cidr_range = var.subnet_cidr_ops
   region        = var.region
   network       = google_compute_network.vpc_network.self_link
-  # 开启私有访问，让没公网 IP 的 VM 也能访问 Google API（如 Cloud Storage）
   private_ip_google_access = true 
 }
 
-# 3. VPC アクセス コネクタ専用サブネット
+# 4. VPC アクセス コネクタ専用サブネット
 resource "google_compute_subnetwork" "connector_subnet" {
   name          = "${var.vpc_network_name}-connector-${var.env_name}"
   project       = var.project_id
@@ -38,7 +38,7 @@ resource "google_compute_subnetwork" "connector_subnet" {
 }
 
 
-# 4. VPC アクセス コネクタ
+# 5. VPC アクセス コネクタ
 resource "google_vpc_access_connector" "main_connector" {
   name          = "cloudrun-connector-${var.env_name}"
   project       = var.project_id
@@ -50,7 +50,7 @@ resource "google_vpc_access_connector" "main_connector" {
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
 
-# 5. IP範囲を予約 (Cloud SQLピアリング用)
+# 6. IP範囲を予約 (Cloud SQLピアリング用)
 resource "google_compute_global_address" "private_ip_range" {
   name          = var.reserved_ip_range_name
   project       = var.project_id
@@ -60,7 +60,7 @@ resource "google_compute_global_address" "private_ip_range" {
   network       = google_compute_network.vpc_network.self_link
 }
 
-# 6. サービスネットワーク接続を作成 (VPC ピアリング)
+# 7. サービスネットワーク接続を作成 (VPC ピアリング)
 resource "google_service_networking_connection" "vpc_peering_connection" {
   network                 = google_compute_network.vpc_network.self_link
   service                 = "servicenetworking.googleapis.com"

@@ -146,10 +146,16 @@ variable "vpc_network_name" {
   default     = "iac-custom-vpc"
 }
 
-variable "subnet_cidr" {
+variable "subnet_cidr_app" {
   description = "アプリケーションサブネットのIP CIDR範囲です。"
   type        = string
   default     = "10.0.1.0/24" 
+}
+
+variable "subnet_cidr_ops" {
+  description = "devopsサブネットのIP CIDR範囲です。"
+  type        = string
+  default     = "10.0.2.0/24" 
 }
 
 variable "connector_subnet_cidr" {

@@ -23,7 +23,8 @@ module "vpc" {
   region                   = var.region
   env_name                 = var.env_name
   vpc_network_name         = var.vpc_network_name
-  subnet_cidr              = var.subnet_cidr
+  subnet_cidr_app          = var.subnet_cidr_app
+  subnet_cidr_ops          = var.subnet_cidr_ops
   connector_subnet_cidr    = var.connector_subnet_cidr
   reserved_ip_range_name   = var.reserved_ip_range_name
   depends_on = [
@@ -54,6 +55,9 @@ module "cloudsql" {
   ]
 }
 
+# ---------------------------------------------
+# 2. Compute Engine モジュール(ops)
+# ---------------------------------------------
 module "ops" {
   source        = "../../modules/ops"
   project_id    = var.project_id
