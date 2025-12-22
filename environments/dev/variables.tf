@@ -92,7 +92,7 @@ variable "keycloak_admin_password" {
 variable "keycloak_external_url" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "keycloak.internal.need.change"
+  default     = "https://auth.ai-agent.tcic-cloud.com"
 }
 
 variable "oauth2_proxy_client_id" {
@@ -143,7 +143,7 @@ variable "external_cloudrun_sa_email" {
 variable "vpc_network_name" {
   description = "VPCネットワークのベース名です。"
   type        = string
-  default     = "iac-custom-vpc"
+  default     = "vpc-main"
 }
 
 variable "subnet_cidr" {
@@ -157,6 +157,7 @@ variable "connector_subnet_cidr" {
   type        = string
   default     = "10.0.3.0/28"
 }
+
 variable "reserved_ip_range_name" {
   description = "Cloud SQLサービスネットワーク用に予約されたIP範囲の名前です。"
   type        = string
