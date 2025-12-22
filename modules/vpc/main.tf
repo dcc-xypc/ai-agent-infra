@@ -9,6 +9,15 @@ resource "google_compute_network" "vpc_network" {
   auto_create_subnetworks = false 
 }
 
+resource "google_compute_route" "default_internet_route" {
+  name             = "default-internet-gateway-route"
+  dest_range       = "0.0.0.0/0"
+  network          = google_compute_network.vpc_network.name
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 1000
+  project          = var.project_id
+}
+
 # 2. アプリケーションサブネット
 resource "google_compute_subnetwork" "app_subnet" {
   name          = "${var.vpc_network_name}-subnet-${var.env_name}"
