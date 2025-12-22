@@ -54,6 +54,18 @@ module "cloudsql" {
   ]
 }
 
+module "ops" {
+  source        = "../../modules/ops"
+  project_id    = var.project_id
+  region        = var.region
+  env_name      = var.env_name
+  vpc_id        = module.vpc.vpc_id
+  ops_subnet_id = module.vpc.ops_subnet_id
+  depends_on = [
+    module.cloudsql 
+  ]
+}
+
 # ---------------------------------------------
 # 3. Cloud Run モジュール
 # ---------------------------------------------

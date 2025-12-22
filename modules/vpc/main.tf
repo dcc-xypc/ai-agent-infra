@@ -18,6 +18,16 @@ resource "google_compute_subnetwork" "app_subnet" {
   network       = google_compute_network.vpc_network.self_link
 }
 
+# 3. devops vm 専用サブネット
+resource "google_compute_subnetwork" "ops_subnet" {
+  name          = "sb-ops-${var.env_name}"
+  ip_cidr_range = "10.10.10.0/24" # 选一个不冲突的网段
+  region        = var.region
+  network       = google_compute_network.vpc_network.self_link
+  # 开启私有访问，让没公网 IP 的 VM 也能访问 Google API（如 Cloud Storage）
+  private_ip_google_access = true 
+}
+
 # 3. VPC アクセス コネクタ専用サブネット
 resource "google_compute_subnetwork" "connector_subnet" {
   name          = "${var.vpc_network_name}-connector-${var.env_name}"
