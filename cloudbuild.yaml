@@ -44,7 +44,7 @@ steps:
     - 'plan'
     - '-out=/workspace/tfplan'
     - '-input=false'
-  envs:
+  env:
     - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
