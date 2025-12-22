@@ -68,20 +68,21 @@ steps:
 # 5. PG Client install
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'bash'
+  env:
+    - 'PROJECT_ID=$PROJECT_ID'
   args:
     - '-c'
     - |
       # 显式设置项目 ID 防止 gcloud 迷路
-      gcloud config set project $${PROJECT_ID}
+      gcloud config set project ${PROJECT_ID}
       if [ "$${_ENABLE_OPS_NAT}" = "true" ]; then
         echo "检测到 NAT 已开启，开始自动化安装工具..."
         SUCCESS=false
         for i in $$(seq 1 10); do
           echo "尝试连接 VM (第 $$i 次)..."
-          # 使用 --quiet 确保非交互，并增加具体的 SSH 参数
-          if gcloud compute ssh ops-vm-$${_ENV_NAME} \
+          if gcloud compute ssh ops-vm-${_ENV_NAME} \
               --tunnel-through-iap \
-              --project=$${PROJECT_ID} \
+              --project=${PROJECT_ID} \
               --zone=asia-northeast1-a \
               --quiet \
               --command="sudo apt-get update && sudo apt-get install -y postgresql-client"; then
