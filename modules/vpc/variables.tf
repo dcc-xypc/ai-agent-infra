@@ -19,6 +19,9 @@ variable "subnet_cidr_ops" {
 variable "connector_subnet_cidr" {
   type = string
 }
+variable "enable_ops_nat" {
+  type = bool
+}
 variable "reserved_ip_range_name" {
   type = string
 }

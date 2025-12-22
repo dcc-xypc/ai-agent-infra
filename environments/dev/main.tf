@@ -26,6 +26,7 @@ module "vpc" {
   subnet_cidr_app          = var.subnet_cidr_app
   subnet_cidr_ops          = var.subnet_cidr_ops
   connector_subnet_cidr    = var.connector_subnet_cidr
+  enable_ops_nat           = var.enable_ops_nat
   reserved_ip_range_name   = var.reserved_ip_range_name
   depends_on = [
     module.project_apis 

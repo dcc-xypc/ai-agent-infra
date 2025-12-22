@@ -75,3 +75,31 @@ resource "google_service_networking_connection" "vpc_peering_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
 }
+
+# 1. 创建路由器
+resource "google_compute_router" "router" {
+  count = var.enable_ops_nat ? 1 : 0
+  name    = "router-${var.env_name}"
+  region  = var.region
+  network = google_compute_network.vpc_network.id
+  project = var.project_id
+}
+
+# 2. 精确配置 NAT 仅针对 ops 子网
+resource "google_compute_router_nat" "nat" {
+  count = var.enable_ops_nat ? 1 : 0
+  name                               = "nat-${var.env_name}"
+  router                             = google_compute_router.router.name
+  region                             = var.region
+  project                            = var.project_id
+  nat_ip_allocate_option             = "AUTO_ONLY"
+
+  # 关键修改：仅针对特定子网
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+
+  subnetwork {
+    # 这里引用你的 ops 子网 ID
+    name                    = google_compute_subnetwork.ops_subnet.id
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+  }
+}

@@ -170,6 +170,11 @@ variable "reserved_ip_range_name" {
   default     = "google-managed-services-ip-range"
 }
 
+variable "enable_ops_nat" {
+  type    = bool
+  default = false
+}
+
 variable "tenant_domain" {
   type        = string
   default     = "tenant1.ai-agent.tcic-cloud.com"

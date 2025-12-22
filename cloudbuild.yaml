@@ -32,7 +32,6 @@ steps:
   args:
     - '-chdir=environments/${_ENV_NAME}'
     - 'validate'
-  # ⭐️ 关键修改：挂载相同的卷，确保访问到 Init 结果
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
@@ -45,7 +44,8 @@ steps:
     - 'plan'
     - '-out=/workspace/tfplan'
     - '-input=false'
-  # ⭐️ 关键修改：挂载相同的卷
+  envs:
+    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
@@ -58,7 +58,6 @@ steps:
     - 'apply'
     - '-auto-approve'
     - '/workspace/tfplan'
-  # ⭐️ 关键修改：挂载相同的卷
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
