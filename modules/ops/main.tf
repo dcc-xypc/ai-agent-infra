@@ -16,6 +16,8 @@ resource "google_compute_instance" "ops_vm" {
   network_interface {
     subnetwork = var.ops_subnet_id
   }
+
+  allow_stopping_for_update = true
   service_account {
     email  = "807696689691-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"] 
