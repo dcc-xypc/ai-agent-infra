@@ -5,7 +5,7 @@
 #  0. 获取密码
 data "google_secret_manager_secret_version" "pg_admin_password" {
   secret  = var.pg_admin_password
-  project = var.project_number
+  project = var.project_id
 }
 
 # 获取 AI Agent 数据库密码
