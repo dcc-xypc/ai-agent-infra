@@ -86,7 +86,7 @@ variable "keycloak_admin_name" {
 variable "keycloak_admin_password" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "keycloak_db_password"
+  default     = "keycloak_admin_password"
 }
 
 variable "keycloak_external_url" {
