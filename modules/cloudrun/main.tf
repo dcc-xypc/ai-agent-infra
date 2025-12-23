@@ -72,7 +72,12 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       }
       env {
         name  = "DB_PASSWORD"
-        value = var.ai_agent_db_password
+        value_source {
+          secret_key_ref {
+            secret  = "ai_agent_db_password"
+            version = "latest"
+          }
+        }
       }
       # 内部服务调用 URL
       env {
@@ -195,7 +200,12 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env {
         name  = "KC_DB_PASSWORD" 
-        value = var.keycloak_db_password
+        value_source {
+          secret_key_ref {
+            secret  = "keycloak_db_password"
+            version = "latest"
+          }
+        }
       }
       env { 
         name  = "KC_BOOTSTRAP_ADMIN_USERNAME" 
@@ -203,7 +213,12 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
       env { 
         name  = "KC_BOOTSTRAP_ADMIN_PASSWORD" 
-        value = var.keycloak_admin_password 
+        value_source {
+          secret_key_ref {
+            secret  = "keycloak_admin_password"
+            version = "latest"
+          }
+        }
       }
       env { 
         name  = "KC_HOSTNAME" 

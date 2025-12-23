@@ -2,6 +2,24 @@
 # Cloud SQL モジュール: Cloud SQL インスタンスとデータベースを作成
 # -----------------------------------------------------------
 
+#  0. 获取密码
+data "google_secret_manager_secret_version" "pg_admin_password" {
+  secret  = var.pg_admin_password
+  project = var.project_id
+}
+
+# 获取 AI Agent 数据库密码
+data "google_secret_manager_secret_version" "ai_agent_db_password" {
+  secret  = var.ai_agent_db_password
+  project = var.project_id
+}
+
+# 获取 Keycloak 数据库密码
+data "google_secret_manager_secret_version" "keycloak_db_password" {
+  secret  = var.keycloak_db_password
+  project = var.project_id
+}
+
 # 1. Cloud SQL インスタンス (プライベート IP のみ)
 resource "google_sql_database_instance" "postgres_instance" {
   database_version = "POSTGRES_17"
@@ -30,7 +48,7 @@ resource "google_sql_user" "postgres_admin" {
   name     = "postgres" 
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
-  password = var.pg_admin_password
+  password = data.google_secret_manager_secret_version.pg_admin_password.secret_data
 
   depends_on = [
     google_sql_database_instance.postgres_instance
@@ -70,7 +88,7 @@ resource "google_sql_user" "ai_agent_user" {
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
   
-  password = var.ai_agent_db_password
+  password = data.google_secret_manager_secret_version.ai_agent_db_password.secret_data
 
   depends_on = [
     google_sql_database_instance.postgres_instance
@@ -86,6 +104,7 @@ resource "google_sql_user" "keycloak_user" {
   project  = var.project_id
   
   password = var.keycloak_db_password
+  password = data.google_secret_manager_secret_version.keycloak_db_password.secret_data
 
   depends_on = [
     google_sql_database_instance.postgres_instance

@@ -25,7 +25,7 @@ variable "db_tier_config" {
 variable "pg_admin_password" {
   description = "The password for the AI Agent database instance."
   type        = string
-  default     = "!QAZxsw2"
+  default     = "pg_admin_password"
 }
 
 variable "ai_agent_db_name" {
@@ -43,7 +43,7 @@ variable "ai_agent_db_user" {
 variable "ai_agent_db_password" {
   description = "The password for the AI Agent application database."
   type        = string
-  default     = "!QAZxsw2"
+  default     = "ai_agent_db_password"
 }
 
 variable "keycloak_db_name" {
@@ -61,7 +61,7 @@ variable "keycloak_db_user" {
 variable "keycloak_db_password" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "!QAZxsw2"
+  default     = "keycloak_db_password"
 }
 
 # --- Cloud Run変数 ---
@@ -86,7 +86,7 @@ variable "keycloak_admin_name" {
 variable "keycloak_admin_password" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "!QAZxsw2"
+  default     = "keycloak_db_password"
 }
 
 variable "keycloak_external_url" {
