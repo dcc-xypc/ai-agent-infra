@@ -103,7 +103,6 @@ resource "google_sql_user" "keycloak_user" {
   instance = google_sql_database_instance.postgres_instance.name
   project  = var.project_id
   
-  password = var.keycloak_db_password
   password = data.google_secret_manager_secret_version.keycloak_db_password.secret_data
 
   depends_on = [
