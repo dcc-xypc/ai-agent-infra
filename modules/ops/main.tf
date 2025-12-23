@@ -23,7 +23,7 @@ resource "google_compute_instance" "ops_vm" {
     scopes = ["cloud-platform"] 
   }
   metadata = {
-    enable-oslogin = "FALSE"
+    enable-oslogin = "false"
   }
 }
 
@@ -40,5 +40,6 @@ resource "google_compute_firewall" "allow_iap_ssh_ops" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-  target_tags   = ["ops-admin"]
+#  target_tags   = ["ops-admin"]
+  target_service_accounts = ["807696689691-compute@developer.gserviceaccount.com"]
 }
