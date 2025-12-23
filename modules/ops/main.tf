@@ -23,7 +23,7 @@ resource "google_compute_instance" "ops_vm" {
     scopes = ["cloud-platform"] 
   }
   metadata = {
-    enable-oslogin = "false"
+    enable-oslogin = "true"
   }
 }
 
