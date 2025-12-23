@@ -4,6 +4,12 @@ variable "project_id" {
   default     = "q14020-d-toyota-imap-dev"
 }
 
+variable "project_number" {
+  description = "GCPプロジェクトNumberです。"
+  type        = string
+  default     = "807696689691"
+}
+
 variable "region" {
   description = "デプロイに使用する唯一のGCPリージョンです。（例：asia-northeast1）"
   type        = string

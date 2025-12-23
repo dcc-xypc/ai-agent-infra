@@ -5,19 +5,19 @@
 #  0. 获取密码
 data "google_secret_manager_secret_version" "pg_admin_password" {
   secret  = var.pg_admin_password
-  project = var.project_id
+  project = var.project_number
 }
 
 # 获取 AI Agent 数据库密码
 data "google_secret_manager_secret_version" "ai_agent_db_password" {
   secret  = var.ai_agent_db_password
-  project = var.project_id
+  project = var.project_number
 }
 
 # 获取 Keycloak 数据库密码
 data "google_secret_manager_secret_version" "keycloak_db_password" {
   secret  = var.keycloak_db_password
-  project = var.project_id
+  project = var.project_number
 }
 
 # 1. Cloud SQL インスタンス (プライベート IP のみ)

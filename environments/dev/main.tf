@@ -40,6 +40,7 @@ module "cloudsql" {
   source = "../../modules/cloudsql"
 
   project_id           = var.project_id
+  project_number       = var.project_number
   region               = var.region
   env_name             = var.env_name
   db_tier_config       = var.db_tier_config
@@ -79,6 +80,7 @@ module "cloudrun" {
   source = "../../modules/cloudrun"
 
   project_id               = var.project_id
+  project_number           = var.project_number
   region                   = var.region
   env_name                 = var.env_name
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
