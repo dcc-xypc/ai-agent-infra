@@ -61,7 +61,9 @@ variable "keycloak_external_url" {
 variable "auth_domain" {
   type = string
 }
-
+variable "tenant_domain" {
+  type = string
+}
 variable "oauth2_proxy_client_id" {
   type = string
 }
