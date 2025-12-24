@@ -376,6 +376,18 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_REDIRECT_URL"
         value = "https://${var.tenant_domain}/oauth2/callback"
       }
+      env {
+        name  = "OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY"
+        value = "true"  # 1. 强制跳过对 ALB 证书的 SSL 验证 
+      }
+      env {
+        name  = "OAUTH2_PROXY_INSECURE_OIDC_SKIP_ISSUER_VERIFICATION"
+        value = "true"  # 2. 跳过 OIDC 发行者 URL 的严格匹配校验 
+      }
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_SECURE"
+        value = "true"  # 3. 确保在 HTTPS (ALB) 环境下 Cookie 能正常工作 
+      }
     }
     
     vpc_access {
