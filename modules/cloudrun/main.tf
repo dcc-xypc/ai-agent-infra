@@ -48,7 +48,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   location = var.region
   project  = var.project_id
     
-  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  ingress  = "INGRESS_TRAFFIC_ALL"
 
   template {
     service_account = var.external_cloudrun_sa_email
@@ -364,8 +364,12 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         value = ".ai-agent.tcic-cloud.com" # 允许以该后缀结尾的所有域名跳转
       }
       env {
-        name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
-        value = var.tenant_domain
+        name  = "OAUTH2_PROXY_SET_XAUTHREQUEST"
+        value = "true"
+      }
+      env {
+        name  = "OAUTH2_PROXY_SKIP_AUTH_PREFLIGHT"
+        value = "true"
       }
       # 目标后端是 web-backend-app 的内部 URL
       env {
