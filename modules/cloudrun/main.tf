@@ -376,6 +376,24 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_REDIRECT_URL"
         value = "https://${var.tenant_domain}/oauth2/callback"
       }
+      # 1. 解决 403 问题：跳过 Proxy 默认登录页，强制重定向到 Keycloak
+      env {
+        name  = "OAUTH2_PROXY_SKIP_PROVIDER_BUTTON"
+        value = "true"
+      }
+
+      # 2. 允许对 API 路径进行重定向（关键修复）
+      # 这会防止 Proxy 对 ajax/api 请求默认返回 403
+      env {
+        name  = "OAUTH2_PROXY_REVERSE_PROXY"
+        value = "true"
+      }
+
+      # 3. 设置 Cookie 作用域，确保在整个租户域名下有效
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
+        value = var.tenant_domain
+      }
       env {
         name  = "OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY"
         value = "true"  # 1. 强制跳过对 ALB 证书的 SSL 验证 
@@ -387,6 +405,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       env {
         name  = "OAUTH2_PROXY_COOKIE_SECURE"
         value = "true"  # 3. 确保在 HTTPS (ALB) 环境下 Cookie 能正常工作 
+      }
+      env {
+        name  = "OAUTH2_PROXY_ERRORS_TO_INFO_LOG"
+        value = "true"
       }
     }
     
