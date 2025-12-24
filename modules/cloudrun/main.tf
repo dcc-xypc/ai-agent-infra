@@ -108,8 +108,7 @@ resource "google_cloud_run_v2_service_iam_member" "web_backend_invoker" {
   location = var.region
   name     = google_cloud_run_v2_service.web_backend_app.name
   role     = "roles/run.invoker"
-  #member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
-  member   = "allUsers"
+  member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
 }
 
 # -----------------------------------------------------------------
@@ -422,10 +421,6 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       env {
         name  = "OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY"
         value = "true"  # 1. 强制跳过对 ALB 证书的 SSL 验证 
-      }
-      env {
-        name  = "OAUTH2_PROXY_SET_XAUTHREQUEST"
-        value = "true"
       }
       env {
         name  = "OAUTH2_PROXY_PASS_ACCESS_TOKEN"
