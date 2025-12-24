@@ -336,8 +336,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     session_affinity = true
     
     containers {
-      # image = local.target_proxy_image
-      image = var.default_placeholder_image
+      image = local.target_proxy_image
+      # image = var.default_placeholder_image
       
       env {
         name  = "OAUTH2_PROXY_HTTP_ADDRESS"
@@ -370,8 +370,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_OIDC_ISSUER_URL"
-        # ⚠️ 替换为您的实际 Realm URL
-        value = "${var.keycloak_external_url}/realms/my-realm" 
+        value = "${var.keycloak_external_url}/realms/ai-agent-realm" 
       }
     }
     
