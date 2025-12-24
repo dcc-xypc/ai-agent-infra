@@ -370,7 +370,11 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       # 目标后端是 web-backend-app 的内部 URL
       env {
         name  = "OAUTH2_PROXY_UPSTREAMS"
-        value = google_cloud_run_v2_service.web_backend_app.uri
+        value = "${google_cloud_run_v2_service.web_backend_app.uri}/"
+      }
+      env {
+        name  = "OAUTH2_PROXY_PASS_HOST_HEADER"
+        value = "false" # 必须设为 false，让 Proxy 使用 Upstream 的 Host
       }
       env {
         name  = "OAUTH2_PROXY_INSECURE_OIDC_ALLOW_UNVERIFIED_EMAIL"
