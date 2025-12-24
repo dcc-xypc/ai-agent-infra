@@ -359,10 +359,22 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_EMAIL_DOMAINS"
         value = "*" 
       }
+      env {
+        name  = "OAUTH2_PROXY_WHITELIST_DOMAINS"
+        value = ".ai-agent.tcic-cloud.com" # 允许以该后缀结尾的所有域名跳转
+      }
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
+        value = var.tenant_domain
+      }
       # 目标后端是 web-backend-app 的内部 URL
       env {
         name  = "OAUTH2_PROXY_UPSTREAMS"
         value = google_cloud_run_v2_service.web_backend_app.uri
+      }
+      env {
+        name  = "OAUTH2_PROXY_INSECURE_OIDC_ALLOW_UNVERIFIED_EMAIL"
+        value = "true" # 允许未验证邮箱的用户登录，避免再次触发 500
       }
       env { 
         name  = "OAUTH2_PROXY_PROVIDER" 
