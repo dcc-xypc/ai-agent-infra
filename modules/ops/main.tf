@@ -1,3 +1,7 @@
+# 2. 获取当前项目默认的 Compute Engine 服务账号
+data "google_compute_default_service_account" "default" {
+  project = var.project_id
+}
 # 1. 运维维护专用 VM (Ops VM)
 resource "google_compute_instance" "ops_vm" {
   name         = "ops-vm-${var.env_name}"
@@ -19,11 +23,12 @@ resource "google_compute_instance" "ops_vm" {
 
   allow_stopping_for_update = true
   service_account {
-    email  = "807696689691-compute@developer.gserviceaccount.com"
+    email  = data.google_compute_default_service_account.default.email
     scopes = ["cloud-platform"] 
   }
   metadata = {
     enable-oslogin = "true"
+    block-project-ssh-keys = "true"
   }
 }
 
@@ -40,6 +45,5 @@ resource "google_compute_firewall" "allow_iap_ssh_ops" {
   }
 
   source_ranges = ["35.235.240.0/20"]
-#  target_tags   = ["ops-admin"]
-  target_service_accounts = ["807696689691-compute@developer.gserviceaccount.com"]
+  target_tags   = ["ops-admin"]
 }
