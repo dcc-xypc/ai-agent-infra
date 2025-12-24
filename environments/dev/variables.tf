@@ -104,19 +104,19 @@ variable "keycloak_external_url" {
 variable "oauth2_proxy_client_id" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "dummy"
+  default     = "ai-agent-client"
 }
 
 variable "oauth2_proxy_client_secret" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "dummy"
+  default     = "nnUpyPmKY6HwAxTdZNXnoic3A3bbvpB9"
 }
 
 variable "oauth2_proxy_cookie_secret" {
   description = "The password for the Keycloak authentication database."
   type        = string
-  default     = "dummy"
+  default     = "5IW9m4YHDWHf8AkuCzU_3b1c1Q9NoLlCJW0lKxgvgXE="
 }
 
 # --- GitHub (標準) トリガー変数 ---
