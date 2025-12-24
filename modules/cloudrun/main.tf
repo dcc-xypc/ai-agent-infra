@@ -108,7 +108,8 @@ resource "google_cloud_run_v2_service_iam_member" "web_backend_invoker" {
   location = var.region
   name     = google_cloud_run_v2_service.web_backend_app.name
   role     = "roles/run.invoker"
-  member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
+  #member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
+  member   = "allUsers"
 }
 
 # -----------------------------------------------------------------
