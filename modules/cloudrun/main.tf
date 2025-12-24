@@ -410,10 +410,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
 
       # 3. 设置 Cookie 作用域，确保在整个租户域名下有效
-      env {
-        name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
-        value = var.tenant_domain
-      }
+      #env {
+      #  name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
+      #  value = var.tenant_domain
+      #}
       env {
         name  = "OAUTH2_PROXY_COOKIE_PATH"
         value = "/"
