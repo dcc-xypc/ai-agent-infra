@@ -11,6 +11,12 @@ resource "google_compute_instance" "ops_vm" {
 
   tags = ["ops-admin"] # 用于防火墙规则匹配
 
+  metadata_startup_script = <<-EOT
+    #!/bin/bash
+    apt-get update
+    apt-get install -y postgresql-client
+  EOT
+
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-12"
