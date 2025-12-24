@@ -412,11 +412,31 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       # 3. 设置 Cookie 作用域，确保在整个租户域名下有效
       env {
         name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
-        value = var.tenant_domain
+        value = ".${var.tenant_domain}"
       }
       env {
         name  = "OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY"
         value = "true"  # 1. 强制跳过对 ALB 证书的 SSL 验证 
+      }
+      env {
+        name  = "OAUTH2_PROXY_SET_XAUTHREQUEST"
+        value = "true"
+      }
+      env {
+        name  = "OAUTH2_PROXY_PASS_ACCESS_TOKEN"
+        value = "true"
+      }
+      env {
+        name  = "OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER"
+        value = "true"
+      }
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_SAMESITE"
+        value = "lax" # 允许从前端页面发起的同域名 API 请求携带 Cookie
+      }
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_CSRF_PER_REQUEST"
+        value = "false" # 针对 API 场景关闭逐请求 CSRF，防止 403
       }
       env {
         name  = "OAUTH2_PROXY_INSECURE_OIDC_SKIP_ISSUER_VERIFICATION"
