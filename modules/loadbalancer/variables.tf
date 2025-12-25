@@ -16,6 +16,14 @@ variable "oauth2_proxy_app_name" {
 variable "auth_keycloak_app_name" {
   type = string
 }
+variable "vpc_id" {
+  description = "VPC 网络的 ID"
+  type        = string
+}
+variable "app_subnet_id" {
+  description = "应用子网的 ID (用于 Internal ALB 分配 IP)"
+  type        = string
+}
 variable "internal_lb_ip_address" {
   type = string
 }

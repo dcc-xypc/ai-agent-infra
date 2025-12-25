@@ -121,6 +121,8 @@ module "loadbalancer" {
   auth_domain           = var.auth_domain
   tenant_domain         = var.tenant_domain
   
+  vpc_id                 = module.vpc.vpc_id
+  app_subnet_id          = module.vpc.app_subnet_id
   internal_lb_ip_address = module.vpc.internal_lb_ip_address
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
