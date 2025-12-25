@@ -4,19 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 6.0"
     }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 6.0"
-    }
   }
 }
 
 provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
-provider "google-beta" {
   project = var.project_id
   region  = var.region
 }
@@ -170,10 +161,6 @@ module "loadbalancer" {
 # ---------------------------------------------
 module "auth" {
   source = "../../modules/auth"
-  providers = {
-    google      = google
-    google-beta = google-beta
-  }
   project_id             = var.project_id
   region                 = var.region
   env_name               = var.env_name

@@ -1,27 +1,13 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 6.0"
-    }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 6.0"
-    }
-  }
-}
 # 获取项目编号用于构建 IAP 系统账号
 data "google_project" "project" {}
 
 # 1. 启用 Identity Platform
 resource "google_identity_platform_config" "default" {
-  provider      = google-beta
   project       = var.project_id
 }
 
 # 2. 将 Keycloak 配置为 OIDC 提供方
-resource "google_identity_platform_oidc_config" "keycloak_idp" {
-  provider      = google-beta
+resource "google_identity_platform_oauth_idp_config" "keycloak_idp" {
   project       = var.project_id
   name          = "oidc.keycloak"
   display_name  = "Keycloak Login"
