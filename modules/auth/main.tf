@@ -26,11 +26,18 @@ resource "google_iap_web_backend_service_iam_member" "iap_access" {
   member              = "allAuthenticatedUsers" 
 }
 
+resource "google_project_service_identity" "iap_sa" {
+  project  = var.project_id
+  service  = "iap.googleapis.com"
+}
+
 # 4. IAP 调用权限：允许 IAP 服务账号调用后端 Cloud Run
 resource "google_cloud_run_v2_service_iam_member" "iap_to_run" {
   project  = var.project_id
   location = var.region
   name     = var.web_backend_app_name
   role     = "roles/run.invoker"
-  member   = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-iap.iam.gserviceaccount.com"
+  member   = "serviceAccount:${google_project_service_identity.iap_sa.email}"
+
+  depends_on = [google_project_service_identity.iap_sa]
 }
