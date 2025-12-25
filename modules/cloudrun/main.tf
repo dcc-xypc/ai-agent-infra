@@ -379,7 +379,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       # 目标后端是 web-backend-app 的内部 URL
       env {
         name  = "OAUTH2_PROXY_UPSTREAMS"
-        value = "http://${internal_lb_ip_address}"
+        value = "http://${var.internal_lb_ip_address}/"
       }
       env {
         name  = "OAUTH2_PROXY_PROXY_PREFIX"
