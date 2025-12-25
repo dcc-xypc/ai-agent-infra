@@ -4,19 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 6.0"
     }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = "~> 6.0"
-    }
   }
 }
 
 provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
-provider "google-beta" {
   project = var.project_id
   region  = var.region
 }
@@ -170,21 +161,15 @@ module "loadbalancer" {
 # ---------------------------------------------
 module "auth" {
   source = "../../modules/auth"
-  providers = {
-    google      = google
-    google-beta = google-beta
-  }
 
   project_id             = var.project_id
   region                 = var.region
   env_name               = var.env_name
   
-  # 复用已有的 Keycloak 凭据变量 
   oauth2_proxy_client_id     = var.oauth2_proxy_client_id
   oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
   keycloak_external_url      = var.keycloak_external_url
   
-  # 传入后端服务名称，用于配置 IAP 权限 
   web_backend_app_name       = module.cloudrun.web_backend_app_name
   web_backend_service_name   = module.loadbalancer.web_backend_service_name # 需要在 lb 模块增加输出
 
