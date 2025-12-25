@@ -2,23 +2,9 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 7.0"
-    }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 7.0"
+      version = "~> 5.0"
     }
   }
-}
-
-provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
-provider "google-beta" {
-  project = var.project_id
-  region  = var.region
 }
 
 # 0. 调用 API 模块
@@ -135,11 +121,8 @@ module "loadbalancer" {
   tenant_domain         = var.tenant_domain
   
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
-  web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
-  oauth2_proxy_client_id     = var.oauth2_proxy_client_id
-  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
 
   depends_on = [
     module.vpc,
@@ -164,30 +147,3 @@ module "loadbalancer" {
 #     module.project_apis 
 #   ]
 # }
-
-# ---------------------------------------------
-# 6. Auth (IAP & Identity Platform) モジュール
-# ---------------------------------------------
-module "auth" {
-  source = "../../modules/auth"
-  providers = {
-    google      = google
-    google-beta = google-beta
-  }
-  project_id             = var.project_id
-  region                 = var.region
-  env_name               = var.env_name
-  
-  oauth2_proxy_client_id     = var.oauth2_proxy_client_id
-  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
-  keycloak_external_url      = var.keycloak_external_url
-  
-  web_backend_app_name       = module.cloudrun.web_backend_app_name
-  web_backend_service_name   = module.loadbalancer.web_backend_service_name # 需要在 lb 模块增加输出
-
-  depends_on = [
-    module.loadbalancer,
-    module.cloudrun
-  ]
-}
-

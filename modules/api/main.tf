@@ -84,9 +84,3 @@ resource "google_project_service" "iap" {
   service = "iap.googleapis.com"
   disable_on_destroy = false
 }
-
-resource "google_project_service" "identitytoolkit" {
-  service            = "identitytoolkit.googleapis.com"
-  disable_on_destroy = false
-}
-
