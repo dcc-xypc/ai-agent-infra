@@ -76,12 +76,10 @@ resource "google_compute_backend_service" "backend_backend" {
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   
-  # 指向上面新创建的后端 App NEG
   backend {
     group = google_compute_region_network_endpoint_group.backend_neg.id
   }
 
-  # 【核心修改】开启 IAP 身份验证
   iap {
     enabled              = true
     oauth2_client_id     = var.oauth2_proxy_client_id
