@@ -124,6 +124,8 @@ module "loadbalancer" {
   web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
+  oauth2_proxy_client_id     = var.oauth2_proxy_client_id
+  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
 
   depends_on = [
     module.vpc,

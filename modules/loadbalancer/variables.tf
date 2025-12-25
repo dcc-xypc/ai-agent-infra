@@ -27,3 +27,12 @@ variable "tenant_domain" {
   description = "前端应用和 API 的域名"
   type        = string
 }
+variable "oauth2_proxy_client_id" {
+  description = "Google OAuth2 Client ID for IAP"
+  type        = string
+}
+variable "oauth2_proxy_client_secret" {
+  description = "Google OAuth2 Client Secret for IAP"
+  type        = string
+}
+
