@@ -189,13 +189,13 @@ resource "google_compute_global_forwarding_rule" "http_rule" {
 # -----------------------------------------------------------
 
 # A. 内部后端服务 (指向业务 Cloud Run)
-# 使用 INTERNAL_MANAGED 方案来确保流量在内网传输 [cite: 4, 5]
+# 使用 INTERNAL_MANAGED 方案来确保流量在内网传输
 resource "google_compute_region_backend_service" "internal_backend" {
   name                  = "internal-backend-${var.env_name}"
   project               = var.project_id
   region                = var.region
-  protocol              = "HTTP" [cite: 5, 6]
-  load_balancing_scheme = "INTERNAL_MANAGED" # 必须是 INTERNAL_MANAGED [cite: 5]
+  protocol              = "HTTP"
+  load_balancing_scheme = "INTERNAL_MANAGED" # 必须是 INTERNAL_MANAGED
 
   # 引用现有的 frontend_neg (业务 Cloud Run) 
   backend {
@@ -208,7 +208,7 @@ resource "google_compute_region_url_map" "internal_url_map" {
   name            = "internal-url-map-${var.env_name}"
   project         = var.project_id
   region          = var.region
-  default_service = google_compute_region_backend_service.internal_backend.id [cite: 8]
+  default_service = google_compute_region_backend_service.internal_backend.id
 }
 
 # C. 内部 HTTP 代理 (处理内网 HTTP 请求)
@@ -216,7 +216,7 @@ resource "google_compute_region_target_http_proxy" "internal_target_proxy" {
   name    = "internal-target-proxy-${var.env_name}"
   project = var.project_id
   region  = var.region
-  url_map = google_compute_region_url_map.internal_url_map.id [cite: 10]
+  url_map = google_compute_region_url_map.internal_url_map.id
 }
 
 # D. 内部转发规则 (IALB 的私有入口)
@@ -225,10 +225,10 @@ resource "google_compute_forwarding_rule" "internal_forwarding_rule" {
   name                  = "internal-forwarding-rule-${var.env_name}"
   project               = var.project_id
   region                = var.region
-  ip_protocol           = "TCP" [cite: 11]
-  load_balancing_scheme = "INTERNAL_MANAGED" # 必须与后端服务一致 [cite: 11]
-  port_range            = "80" [cite: 11]
-  target                = google_compute_region_target_http_proxy.internal_target_proxy.id [cite: 11]
+  ip_protocol           = "TCP"
+  load_balancing_scheme = "INTERNAL_MANAGED" # 必须与后端服务一致
+  port_range            = "80"
+  target                = google_compute_region_target_http_proxy.internal_target_proxy.id
   
   # 关联已有的网络
   network               = var.vpc_id
