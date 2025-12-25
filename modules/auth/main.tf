@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 6.0" # 强制要求 6.0 以上版本，因为该资源在此版本已正式加入
+    }
+  }
+}
 # 获取项目编号用于构建 IAP 系统账号
 data "google_project" "project" {}
 
