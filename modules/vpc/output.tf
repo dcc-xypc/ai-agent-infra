@@ -12,7 +12,10 @@ output "connector_id" {
   description = "VPCアクセスコネクタのセルフリンクです。"
   value       = google_vpc_access_connector.main_connector.id
 }
-
+output "app_subnet_id" {
+  value       = google_compute_subnetwork.app_subnet.id
+  description = "应用子网的 ID"
+}
 output "ops_subnet_id" {
   description = "运维管理专用子网 ID，用于部署维护机（Ops VM）。"
   value       = google_compute_subnetwork.ops_subnet.id
