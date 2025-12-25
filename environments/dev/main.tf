@@ -148,3 +148,29 @@ module "loadbalancer" {
 #     module.project_apis 
 #   ]
 # }
+
+# ---------------------------------------------
+# 6. Auth (IAP & Identity Platform) モジュール
+# ---------------------------------------------
+module "auth" {
+  source = "../../modules/auth"
+
+  project_id             = var.project_id
+  region                 = var.region
+  env_name               = var.env_name
+  
+  # 复用已有的 Keycloak 凭据变量 
+  oauth2_proxy_client_id     = var.oauth2_proxy_client_id
+  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
+  keycloak_external_url      = var.keycloak_external_url
+  
+  # 传入后端服务名称，用于配置 IAP 权限 
+  web_backend_app_name       = module.cloudrun.web_backend_app_name
+  web_backend_service_name   = module.loadbalancer.web_backend_service_name # 需要在 lb 模块增加输出
+
+  depends_on = [
+    module.loadbalancer,
+    module.cloudrun
+  ]
+}
+
