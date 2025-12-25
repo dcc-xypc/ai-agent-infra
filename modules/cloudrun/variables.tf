@@ -22,6 +22,9 @@ variable "default_placeholder_image" {
 variable "oauth2_proxy_image_gcr" {
   type = string
 }
+variable "oauth2_proxy_upstream" {
+  type = string
+}
 variable "ai_agent_db_connection_name" {
   type = string
 }

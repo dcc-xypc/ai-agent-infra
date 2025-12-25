@@ -86,6 +86,7 @@ module "cloudrun" {
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
   default_placeholder_image = var.default_placeholder_image
   connector_id             = module.vpc.connector_id
+  oauth2_proxy_upstream = "http://${module.loadbalancer.internal_lb_ip}"
   ai_agent_db_connection_name       = module.cloudsql.instance_connection_name
   auth_domain           = var.auth_domain
   tenant_domain         = var.tenant_domain

@@ -76,7 +76,22 @@ resource "google_service_networking_connection" "vpc_peering_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
 }
 
-# 1. 创建路由器
+# -----------------------------------------------------------
+# 8. Proxy-Only サブネット (Internal ALB 用)
+# -----------------------------------------------------------
+# Internal HTTP(S) Load Balancing には、リージョンごとに 1 つのプロキシ専用サブネットが必要です。
+resource "google_compute_subnetwork" "proxy_only_subnet" {
+  name          = "proxy-only-subnet-${var.env_name}"
+  project       = var.project_id
+  region        = var.region
+  network       = google_compute_network.vpc_network.id
+  
+  # プロキシ専用サブネットの推奨設定
+  ip_cidr_range = "10.129.0.0/26" # 既存の CIDR 範囲と重複しない値を指定してください
+  purpose       = "REGIONAL_MANAGED_PROXY"
+  role          = "ACTIVE"
+}
+
 resource "google_compute_router" "router" {
   count = var.enable_ops_nat ? 1 : 0
   name    = "router-${var.env_name}"
@@ -85,7 +100,6 @@ resource "google_compute_router" "router" {
   project = var.project_id
 }
 
-# 2. 精确配置 NAT 仅针对 ops 子网
 resource "google_compute_router_nat" "nat" {
   count = var.enable_ops_nat ? 1 : 0
   name                               = "nat-${var.env_name}"

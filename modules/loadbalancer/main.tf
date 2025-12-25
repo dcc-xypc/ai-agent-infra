@@ -183,3 +183,55 @@ resource "google_compute_global_forwarding_rule" "http_rule" {
   target                = google_compute_target_http_proxy.http_redirect_proxy.id
   ip_address            = google_compute_global_address.lb_ip.address
 }
+
+# -----------------------------------------------------------
+# 9. Internal Application Load Balancer (IALB) 配置
+# -----------------------------------------------------------
+
+# A. 内部后端服务 (指向业务 Cloud Run)
+# 使用 INTERNAL_MANAGED 方案来确保流量在内网传输 [cite: 4, 5]
+resource "google_compute_region_backend_service" "internal_backend" {
+  name                  = "internal-backend-${var.env_name}"
+  project               = var.project_id
+  region                = var.region
+  protocol              = "HTTP" [cite: 5, 6]
+  load_balancing_scheme = "INTERNAL_MANAGED" # 必须是 INTERNAL_MANAGED [cite: 5]
+
+  # 引用现有的 frontend_neg (业务 Cloud Run) 
+  backend {
+    group = google_compute_region_network_endpoint_group.frontend_neg.id
+  }
+}
+
+# B. 内部 URL Map (定义内网路由规则)
+resource "google_compute_region_url_map" "internal_url_map" {
+  name            = "internal-url-map-${var.env_name}"
+  project         = var.project_id
+  region          = var.region
+  default_service = google_compute_region_backend_service.internal_backend.id [cite: 8]
+}
+
+# C. 内部 HTTP 代理 (处理内网 HTTP 请求)
+resource "google_compute_region_target_http_proxy" "internal_target_proxy" {
+  name    = "internal-target-proxy-${var.env_name}"
+  project = var.project_id
+  region  = var.region
+  url_map = google_compute_region_url_map.internal_url_map.id [cite: 10]
+}
+
+# D. 内部转发规则 (IALB 的私有入口)
+# 这是 OAuth2-Proxy 将会访问的“内部终点”
+resource "google_compute_forwarding_rule" "internal_forwarding_rule" {
+  name                  = "internal-forwarding-rule-${var.env_name}"
+  project               = var.project_id
+  region                = var.region
+  ip_protocol           = "TCP" [cite: 11]
+  load_balancing_scheme = "INTERNAL_MANAGED" # 必须与后端服务一致 [cite: 11]
+  port_range            = "80" [cite: 11]
+  target                = google_compute_region_target_http_proxy.internal_target_proxy.id [cite: 11]
+  
+  # 关联已有的网络
+  network               = var.vpc_id
+  subnetwork            = var.app_subnet_id # 业务子网 ID
+}
+
