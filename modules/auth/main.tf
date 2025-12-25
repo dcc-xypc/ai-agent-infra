@@ -3,12 +3,14 @@ data "google_project" "project" {}
 
 # 1. 启用 Identity Platform
 resource "google_identity_platform_config" "default" {
-  project = var.project_id
+  project       = var.project_id
+  provider      = google-beta
 }
 
 # 2. 将 Keycloak 配置为 OIDC 提供方
 resource "google_identity_platform_oidc_config" "keycloak_idp" {
   project       = var.project_id
+  provider      = google-beta
   name          = "oidc.keycloak"
   display_name  = "Keycloak Login"
   client_id     = var.oauth2_proxy_client_id
