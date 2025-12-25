@@ -80,11 +80,11 @@ resource "google_compute_backend_service" "backend_backend" {
     group = google_compute_region_network_endpoint_group.backend_neg.id
   }
 
-#  iap {
-#    enabled              = true
-#    oauth2_client_id     = var.oauth2_proxy_client_id
-#    oauth2_client_secret = var.oauth2_proxy_client_secret
-#  }
+  iap {
+    enabled              = true
+    oauth2_client_id     = var.oauth2_proxy_client_id
+    oauth2_client_secret = var.oauth2_proxy_client_secret
+  }
 
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
