@@ -25,15 +25,26 @@ resource "google_compute_region_network_endpoint_group" "frontend_neg" {
   }
 }
 
-resource "google_compute_region_network_endpoint_group" "proxy_neg" {
-  name                  = "proxy-neg-${var.env_name}"
+resource "google_compute_region_network_endpoint_group" "backend_neg" {
+  name                  = "backend-app-neg-${var.env_name}"
   project               = var.project_id
   region                = var.region
   network_endpoint_type = "SERVERLESS"
   cloud_run {
-    service = var.oauth2_proxy_app_name
+    # 确保变量名与你后端服务的名称一致
+    service = var.web_backend_app_name 
   }
 }
+
+#resource "google_compute_region_network_endpoint_group" "proxy_neg" {
+#  name                  = "proxy-neg-${var.env_name}"
+#  project               = var.project_id
+#  region                = var.region
+#  network_endpoint_type = "SERVERLESS"
+#  cloud_run {
+#    service = var.oauth2_proxy_app_name
+#  }
+#}
 
 resource "google_compute_region_network_endpoint_group" "keycloak_neg" {
   name                  = "keycloak-neg-${var.env_name}"
@@ -59,17 +70,39 @@ resource "google_compute_backend_service" "frontend_backend" {
   }
 }
 
-resource "google_compute_backend_service" "proxy_backend" {
-  name                  = "proxy-backend-${var.env_name}"
+resource "google_compute_backend_service" "backend_backend" {
+  name                  = "backend-service-${var.env_name}"
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  
+  # 指向上面新创建的后端 App NEG
+  backend {
+    group = google_compute_region_network_endpoint_group.backend_neg.id
+  }
+
+  # 【核心修改】开启 IAP 身份验证
+  iap {
+    enabled              = true
+    oauth2_client_id     = var.oauth2_proxy_client_id
+    oauth2_client_secret = var.oauth2_proxy_client_secret
+  }
+
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
-  backend {
-    group = google_compute_region_network_endpoint_group.proxy_neg.id
-  }
 }
+
+#resource "google_compute_backend_service" "proxy_backend" {
+#  name                  = "proxy-backend-${var.env_name}"
+#  project               = var.project_id
+#  protocol              = "HTTP"
+#  load_balancing_scheme = "EXTERNAL_MANAGED"
+#  session_affinity      = "GENERATED_COOKIE"
+#  affinity_cookie_ttl_sec = 300
+#  backend {
+#    group = google_compute_region_network_endpoint_group.proxy_neg.id
+#  }
+#}
 
 resource "google_compute_backend_service" "keycloak_backend" {
   name                  = "keycloak-backend-${var.env_name}"
@@ -125,9 +158,14 @@ resource "google_compute_url_map" "url_map" {
     default_service = google_compute_backend_service.frontend_backend.id
     
     path_rule {
-      paths   = ["/api/*", "/oauth2/*"]
-      service = google_compute_backend_service.proxy_backend.id
+      # 将 API 流量直接导向开启了 IAP 的后端服务
+      paths   = ["/api/*"]
+      service = google_compute_backend_service.backend_backend.id
     }
+    #path_rule {
+    #  paths   = ["/api/*", "/oauth2/*"]
+    #  service = google_compute_backend_service.proxy_backend.id
+    #}
   }
 }
 

@@ -121,6 +121,7 @@ module "loadbalancer" {
   tenant_domain         = var.tenant_domain
   
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
+  web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
 

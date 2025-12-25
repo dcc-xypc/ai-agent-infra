@@ -48,7 +48,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   location = var.region
   project  = var.project_id
     
-  ingress  = "INGRESS_TRAFFIC_ALL"
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
     service_account = var.external_cloudrun_sa_email
