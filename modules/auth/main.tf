@@ -2,7 +2,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 6.0" # 强制要求 6.0 以上版本，因为该资源在此版本已正式加入
+      version = ">= 6.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = ">= 6.0"
     }
   }
 }
@@ -11,11 +15,13 @@ data "google_project" "project" {}
 
 # 1. 启用 Identity Platform
 resource "google_identity_platform_config" "default" {
+  provider      = google-beta
   project       = var.project_id
 }
 
 # 2. 将 Keycloak 配置为 OIDC 提供方
 resource "google_identity_platform_oidc_config" "keycloak_idp" {
+  provider      = google-beta
   project       = var.project_id
   name          = "oidc.keycloak"
   display_name  = "Keycloak Login"
