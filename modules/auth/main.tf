@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+    }
+    google-beta = {
+      source = "hashicorp/google-beta"
+    }
+  }
+}
 # 获取项目编号用于构建 IAP 系统账号
 data "google_project" "project" {}
 
@@ -27,6 +37,7 @@ resource "google_iap_web_backend_service_iam_member" "iap_access" {
 }
 
 resource "google_project_service_identity" "iap_sa" {
+  provider = google-beta
   project  = var.project_id
   service  = "iap.googleapis.com"
 }
