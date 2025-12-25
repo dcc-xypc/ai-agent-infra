@@ -86,11 +86,11 @@ module "cloudrun" {
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
   default_placeholder_image = var.default_placeholder_image
   connector_id             = module.vpc.connector_id
-  oauth2_proxy_upstream = "http://${module.loadbalancer.internal_lb_ip}"
   ai_agent_db_connection_name       = module.cloudsql.instance_connection_name
   auth_domain           = var.auth_domain
   tenant_domain         = var.tenant_domain
   keycloak_db_connection_name       = module.cloudsql.instance_connection_name 
+  internal_lb_ip_address = module.vpc.internal_lb_ip_address
   ai_agent_db_name         = var.ai_agent_db_name
   ai_agent_db_user         = var.ai_agent_db_user
   ai_agent_db_password     = var.ai_agent_db_password
@@ -121,6 +121,7 @@ module "loadbalancer" {
   auth_domain           = var.auth_domain
   tenant_domain         = var.tenant_domain
   
+  internal_lb_ip_address = module.vpc.internal_lb_ip_address
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 

@@ -92,6 +92,24 @@ resource "google_compute_subnetwork" "proxy_only_subnet" {
   role          = "ACTIVE"
 }
 
+# -----------------------------------------------------------
+# 9. Internal ALB 用の静的内部 IP アドレスの予約
+# -----------------------------------------------------------
+# Internal ALB (转发规则) で使用するための固定プライベート IP を予約します。
+# これにより、他のサービス（VPC Connector 等）との IP 衝突を回避し、
+# Terraform の循環参照（Cycle Error）も解消できます。
+
+resource "google_compute_address" "internal_lb_static_ip" {
+  name         = "internal-lb-ip-${var.env_name}"
+  project      = var.project_id
+  region       = var.region
+  address_type = "INTERNAL"
+  purpose      = "GCE_ENDPOINT" # 内部負荷分散用の標準的な用途
+  
+  # 予約するサブネットを指定
+  subnetwork   = google_compute_subnetwork.app_subnet.id
+}
+
 resource "google_compute_router" "router" {
   count = var.enable_ops_nat ? 1 : 0
   name    = "router-${var.env_name}"

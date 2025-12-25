@@ -232,6 +232,7 @@ resource "google_compute_forwarding_rule" "internal_forwarding_rule" {
   
   # 关联已有的网络
   network               = var.vpc_id
-  subnetwork            = var.app_subnet_id # 业务子网 ID
+  subnetwork            = var.app_subnet_id
+  ip_address            = var.internal_lb_ip_address
 }
 

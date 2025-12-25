@@ -13,6 +13,9 @@ variable "env_name" {
 variable "connector_id" {
   type = string
 }
+variable "internal_lb_ip_address" {
+  type = string
+}
 variable "external_cloudrun_sa_email" {
   type = string
 }
@@ -20,9 +23,6 @@ variable "default_placeholder_image" {
   type = string
 }
 variable "oauth2_proxy_image_gcr" {
-  type = string
-}
-variable "oauth2_proxy_upstream" {
   type = string
 }
 variable "ai_agent_db_connection_name" {
