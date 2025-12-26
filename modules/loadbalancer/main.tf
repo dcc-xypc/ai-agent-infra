@@ -44,6 +44,15 @@ resource "google_compute_region_network_endpoint_group" "keycloak_neg" {
     service = var.auth_keycloak_app_name
   }
 }
+resource "google_compute_region_network_endpoint_group" "backend_neg" {
+  name                  = "backend-neg-${var.env_name}"
+  project               = var.project_id
+  region                = var.region
+  network_endpoint_type = "SERVERLESS"
+  cloud_run {
+    service = var.web_backend_app_name
+  }
+}
 
 # 3. 后端服务 (Backend Services) 设置
 
@@ -197,9 +206,8 @@ resource "google_compute_region_backend_service" "internal_backend" {
   protocol              = "HTTP"
   load_balancing_scheme = "INTERNAL_MANAGED" # 必须是 INTERNAL_MANAGED
 
-  # 引用现有的 frontend_neg (业务 Cloud Run) 
   backend {
-    group = google_compute_region_network_endpoint_group.frontend_neg.id
+    group = google_compute_region_network_endpoint_group.backend_neg.id
     balancing_mode = "UTILIZATION"
     capacity_scaler = 1.0
   }
