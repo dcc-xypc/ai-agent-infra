@@ -200,7 +200,8 @@ resource "google_compute_region_backend_service" "internal_backend" {
   # 引用现有的 frontend_neg (业务 Cloud Run) 
   backend {
     group = google_compute_region_network_endpoint_group.frontend_neg.id
-    balancing_mode = null
+    balancing_mode = "UTILIZATION"
+    capacity_scaler = 1.0
   }
 }
 
