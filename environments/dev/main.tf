@@ -45,6 +45,7 @@ module "cloudsql" {
   env_name             = var.env_name
   db_tier_config       = var.db_tier_config
   pg_admin_password    = var.pg_admin_password
+  mysql_admin_password = var.mysql_admin_password
   ai_agent_db_name     = var.ai_agent_db_name
   keycloak_db_name     = var.keycloak_db_name
   ai_agent_db_user     = var.ai_agent_db_user

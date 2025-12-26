@@ -34,6 +34,12 @@ variable "pg_admin_password" {
   default     = "pg_admin_password"
 }
 
+variable "mysql_admin_password" {
+  description = "The password for the AI Agent database instance."
+  type        = string
+  default     = "mysql_admin_password"
+}
+
 variable "ai_agent_db_name" {
   description = "The name for the AI Agent application database."
   type        = string

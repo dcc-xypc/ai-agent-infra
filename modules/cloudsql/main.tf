@@ -8,6 +8,11 @@ data "google_secret_manager_secret_version" "pg_admin_password" {
   project = var.project_id
 }
 
+data "google_secret_manager_secret_version" "mysql_admin_password" {
+  secret  = var.mysql_admin_password
+  project = var.project_id
+}
+
 # 获取 AI Agent 数据库密码
 data "google_secret_manager_secret_version" "ai_agent_db_password" {
   secret  = var.ai_agent_db_password
@@ -54,15 +59,46 @@ resource "google_sql_user" "postgres_admin" {
     google_sql_database_instance.postgres_instance
   ]
 }
+# 1.1 新增 MySQL 实例 (私有 IP 模式)
+resource "google_sql_database_instance" "mysql_instance" {
+  database_version = "MYSQL_8_0"  # 指定为 MySQL
+  name             = "ai-agent-mysql-instance-${var.env_name}"
+  project          = var.project_id
+  region           = var.region
 
+  settings {
+    tier      = var.db_tier_config[var.env_name] 
+    disk_size = 10 
+    disk_type = "PD_SSD"
+
+    ip_configuration {
+      ipv4_enabled    = false 
+      private_network = var.private_network_link 
+    }
+    
+    # MySQL 特有的配置项（可选，如不区分大小写等）
+    database_flags {
+      name  = "character_set_server"
+      value = "utf8mb4"
+    }
+  }
+  deletion_protection = false
+}
+resource "google_sql_user" "mysql_admin" {
+  name     = "root"
+  instance = google_sql_database_instance.mysql_instance.name
+  project  = var.project_id
+  password = data.google_secret_manager_secret_version.mysql_admin_password.secret_data
+
+  depends_on = [google_sql_database_instance.mysql_instance]
+}
 # ----------------------------------------------------
 # 2. 创建应用程序数据库 (AI Agent)
 # ----------------------------------------------------
 resource "google_sql_database" "ai_agent_db" {
   name     = var.ai_agent_db_name
   project  = var.project_id
-  instance = google_sql_database_instance.postgres_instance.name
-  
+  instance = google_sql_database_instance.mysql_instance.name
   depends_on = [
     google_sql_database_instance.postgres_instance
   ]
@@ -85,7 +121,7 @@ resource "google_sql_database" "keycloak_db" {
 # ----------------------------------------------------
 resource "google_sql_user" "ai_agent_user" {
   name     = var.ai_agent_db_user
-  instance = google_sql_database_instance.postgres_instance.name
+  instance = google_sql_database_instance.mysql_instance.name
   project  = var.project_id
   
   password = data.google_secret_manager_secret_version.ai_agent_db_password.secret_data

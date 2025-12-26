@@ -16,6 +16,9 @@ variable "db_tier_config" {
 variable "pg_admin_password" {
   type = string
 }
+variable "mysql_admin_password" {
+  type = string
+}
 variable "ai_agent_db_name" {
   type = string
 }
