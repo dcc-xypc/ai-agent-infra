@@ -125,6 +125,7 @@ module "loadbalancer" {
   app_subnet_id          = module.vpc.app_subnet_id
   internal_lb_ip_address = module.vpc.internal_lb_ip_address
   web_frontend_app_name = module.cloudrun.web_frontend_app_name
+  web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
 

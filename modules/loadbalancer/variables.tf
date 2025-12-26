@@ -10,6 +10,9 @@ variable "region" {
 variable "web_frontend_app_name" {
   type = string
 }
+variable "web_backend_app_name" {
+  type = string
+}
 variable "oauth2_proxy_app_name" {
   type = string
 }
