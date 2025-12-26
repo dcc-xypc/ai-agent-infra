@@ -14,7 +14,7 @@ resource "google_compute_instance" "ops_vm" {
   metadata_startup_script = <<-EOT
     #!/bin/bash
     apt-get update
-    apt-get install -y postgresql-client
+    apt-get install -y postgresql-client default-mysql-client
   EOT
 
   boot_disk {
