@@ -100,7 +100,7 @@ resource "google_sql_database" "ai_agent_db" {
   project  = var.project_id
   instance = google_sql_database_instance.mysql_instance.name
   depends_on = [
-    google_sql_database_instance.postgres_instance
+    google_sql_database_instance.mysql_instance
   ]
 }
 
