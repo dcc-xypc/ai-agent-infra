@@ -59,15 +59,15 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       
       # 数据库连接配置 (AI Agent DB)
       env {
-        name  = "CLOUD_SQL_CONN_NAME"
+        name  = "AI_AGENT_DB_CONN_NAME"
         value = var.ai_agent_db_connection_name 
       }
       env {
-        name  = "DB_NAME"
+        name  = "AI_AGENT_DB_NAME"
         value = var.ai_agent_db_name
       }
       env {
-        name  = "DB_USER"
+        name  = "AI_AGENT_DB_USER"
         value = var.ai_agent_db_user
       }
       env {
@@ -79,13 +79,22 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
           }
         }
       }
-      # 内部服务调用 URL
       env {
         name  = "AI_AGENT_URL"
-        value = google_cloud_run_v2_service.ai_agent_engine_app.uri
+        value = ""
+      }
+      volume_mounts {
+        name       = "cloudsql"
+        mount_path = "/cloudsql"
       }
     }
     
+    volumes {
+      name = "cloudsql"
+      cloud_sql_instance {
+        instances = [var.ai_agent_db_connection_name]
+      }
+    }
     vpc_access {
       connector = var.connector_id
       egress    = "ALL_TRAFFIC"
