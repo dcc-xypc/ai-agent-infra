@@ -26,6 +26,7 @@ resource "google_compute_region_network_endpoint_group" "frontend_neg" {
 }
 
 resource "google_compute_region_network_endpoint_group" "proxy_neg" {
+  count = var.oauth2_proxy_app_name != "" ? 1 : 0
   name                  = "proxy-neg-${var.env_name}"
   project               = var.project_id
   region                = var.region
@@ -69,6 +70,7 @@ resource "google_compute_backend_service" "frontend_backend" {
 }
 
 resource "google_compute_backend_service" "proxy_backend" {
+  count = var.oauth2_proxy_app_name != "" ? 1 : 0
   name                  = "proxy-backend-${var.env_name}"
   project               = var.project_id
   protocol              = "HTTP"

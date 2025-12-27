@@ -146,6 +146,7 @@ module "loadbalancer" {
   web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
+  setup_keycloak_resources = var.setup_keycloak_resources
 
   depends_on = [
     module.vpc,
