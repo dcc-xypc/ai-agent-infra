@@ -132,6 +132,7 @@ resource "google_compute_url_map" "url_map" {
 
   # Tenant のパス配布 (Frontend vs OAuth2 Proxy)
   path_matcher {
+    count = var.oauth2_proxy_app_name != "" ? 1 : 0
     name            = "tenant-matcher"
     default_service = google_compute_backend_service.frontend_backend.id
     
