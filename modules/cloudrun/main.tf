@@ -18,7 +18,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
     
     vpc_access {
       connector = var.connector_id
-      egress    = "ALL_TRAFFIC"
+      egress    = "PRIVATE_RANGES_ONLY"
     }
   }
   lifecycle {
@@ -119,48 +119,6 @@ resource "google_cloud_run_v2_service_iam_member" "web_backend_invoker" {
   role     = "roles/run.invoker"
   #member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
   member   = "allUsers"
-}
-
-# -----------------------------------------------------------------
-# 3. AI Agent 服务: ai-agent-engine-app (内部服务, 无 DB)
-# -----------------------------------------------------------------
-resource "google_cloud_run_v2_service" "ai_agent_engine_app" {
-  name     = "ai-agent-engine-app-${var.env_name}"
-  location = var.region
-  project  = var.project_id
-
-  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY"
-
-  template {
-    service_account = var.external_cloudrun_sa_email
-    
-    containers {
-      image = var.default_placeholder_image
-    }
-    
-    vpc_access {
-      connector = var.connector_id
-      egress    = "ALL_TRAFFIC"
-    }
-  }
-  lifecycle {
-    ignore_changes = [
-      template[0].containers[0].image,
-    ]
-  }
-  traffic {
-    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent = 100
-  }
-}
-
-# 3.1 AI Agent 权限 (仅允许后端服务调用)
-resource "google_cloud_run_v2_service_iam_member" "ai_agent_engine_backend_invoker" {
-  project  = var.project_id
-  location = var.region
-  name     = google_cloud_run_v2_service.ai_agent_engine_app.name
-  role     = "roles/run.invoker"
-  member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
 }
 
 # -----------------------------------------------------------------
