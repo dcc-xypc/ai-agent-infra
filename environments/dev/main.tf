@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+    keycloak = {
+      source  = "mrparkers/keycloak"
+      version = ">= 4.4.0"
+    }
   }
 }
 
