@@ -346,8 +346,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     session_affinity = true
     
     containers {
-      image = local.target_proxy_image
-      # image = var.default_placeholder_image
+      #image = local.target_proxy_image
+      image = var.default_placeholder_image
       
       env {
         name  = "OAUTH2_PROXY_HTTP_ADDRESS"
