@@ -71,7 +71,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
         value = var.ai_agent_db_user
       }
       env {
-        name  = "DB_PASSWORD"
+        name  = "AI_AGENT_DB_PASS"
         value_source {
           secret_key_ref {
             secret  = "ai_agent_db_password"
