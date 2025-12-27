@@ -10,7 +10,10 @@ terraform {
     }
   }
 }
-
+data "google_secret_manager_secret_version" "keycloak_admin_password" {
+  secret  = var.keycloak_admin_password
+  project = var.project_id
+}
 provider "keycloak" {
   alias     = "keycloak_auth"
   client_id = "admin-cli"
@@ -115,8 +118,9 @@ module "cloudrun" {
   keycloak_external_url    = var.keycloak_external_url
   oauth2_proxy_image_gcr   = var.oauth2_proxy_image_gcr
   oauth2_proxy_client_id   = var.oauth2_proxy_client_id
-  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
+  oauth2_proxy_client_secret = var.setup_keycloak_resources ? module.keycloak_setup[0].client_secret : ""
   oauth2_proxy_cookie_secret = var.oauth2_proxy_cookie_secret
+  setup_keycloak_resources = var.setup_keycloak_resources
   depends_on = [
     module.cloudsql 
   ]

@@ -1,8 +1,5 @@
 # 1. 在模块内部读取 Secret Manager
-data "google_secret_manager_secret_version" "keycloak_admin_password" {
-  secret  = var.keycloak_admin_password
-  project = var.project_id
-}
+
 
 # 2. 配置内部 Provider
 terraform {

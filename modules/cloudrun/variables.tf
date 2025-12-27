@@ -103,3 +103,6 @@ variable "oauth2_proxy_cookie_secret" {
   description = "OAuth2 Proxyクッキーシークレット"
   sensitive   = true
 }
+variable "setup_keycloak_resources" {
+  type = bool
+}

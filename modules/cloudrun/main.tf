@@ -361,7 +361,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env { 
         name  = "OAUTH2_PROXY_CLIENT_SECRET" 
-        value = module.keycloak_init[0].client_secret
+        value = var.oauth2_proxy_client_secret 
       }
       env { 
         name  = "OAUTH2_PROXY_COOKIE_SECRET" 
