@@ -137,7 +137,7 @@ module "loadbalancer" {
 }
 
 module "keycloak_setup" {
-  source = "./modules/keycloak_setup"
+  source = "../../modules/keycloak_setup"
   count  = var.setup_keycloak_resources ? 1 : 0
 
   project_id             = var.project_id
