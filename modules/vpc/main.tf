@@ -131,8 +131,11 @@ resource "google_compute_router_nat" "nat" {
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 
   subnetwork {
-    # 这里引用你的 ops 子网 ID
     name                    = google_compute_subnetwork.ops_subnet.id
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+  }
+  subnetwork {
+    name                    = google_compute_subnetwork.connector_subnet.id
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 }
