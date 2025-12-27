@@ -339,8 +339,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   depends_on = [
-    google_cloud_run_v2_service.web_backend_app,
-    module.keycloak_setup
+    google_cloud_run_v2_service.web_backend_app
   ]
 
   template {
