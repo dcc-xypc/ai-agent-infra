@@ -128,7 +128,7 @@ resource "google_sql_user" "ai_agent_user" {
   password = data.google_secret_manager_secret_version.ai_agent_db_password.secret_data
 
   depends_on = [
-    google_sql_database_instance.postgres_instance
+    google_sql_database_instance.mysql_instance
   ]
 }
 
