@@ -19,6 +19,7 @@ provider "keycloak" {
   client_id = "admin-cli"
   username  = var.keycloak_admin_name
   password  = data.google_secret_manager_secret_version.keycloak_admin_password.secret_data
+  initial_login = false
   url   = var.setup_keycloak_resources ? "https://${var.auth_domain}" : "https://www.example.com"
 }
 
