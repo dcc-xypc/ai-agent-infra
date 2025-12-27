@@ -4,23 +4,7 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
-    keycloak = {
-      source  = "mrparkers/keycloak"
-      version = ">= 4.4.0"
-    }
   }
-}
-data "google_secret_manager_secret_version" "keycloak_admin_password" {
-  secret  = var.keycloak_admin_password
-  project = var.project_id
-}
-provider "keycloak" {
-  alias     = "keycloak_auth"
-  client_id = "admin-cli"
-  username  = var.keycloak_admin_name
-  password  = data.google_secret_manager_secret_version.keycloak_admin_password.secret_data
-  initial_login = false
-  url   = var.setup_keycloak_resources ? "https://${var.auth_domain}" : "https://www.example.com"
 }
 
 # 0. 调用 API 模块
@@ -119,9 +103,8 @@ module "cloudrun" {
   keycloak_external_url    = var.keycloak_external_url
   oauth2_proxy_image_gcr   = var.oauth2_proxy_image_gcr
   oauth2_proxy_client_id   = var.oauth2_proxy_client_id
-  oauth2_proxy_client_secret = var.setup_keycloak_resources ? module.keycloak_setup[0].client_secret : ""
+  oauth2_proxy_client_secret = var.oauth2_proxy_client_secret
   oauth2_proxy_cookie_secret = var.oauth2_proxy_cookie_secret
-  setup_keycloak_resources = var.setup_keycloak_resources
   depends_on = [
     module.cloudsql 
   ]
@@ -146,7 +129,6 @@ module "loadbalancer" {
   web_backend_app_name  = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name = module.cloudrun.auth_keycloak_app_name 
-  setup_keycloak_resources = var.setup_keycloak_resources
 
   depends_on = [
     module.vpc,
@@ -154,19 +136,6 @@ module "loadbalancer" {
   ]
 }
 
-module "keycloak_setup" {
-  source = "../../modules/keycloak_setup"
-  count  = var.setup_keycloak_resources ? 1 : 0
-  providers = {
-    keycloak = keycloak.keycloak_auth
-  }
-  project_id             = var.project_id
-  auth_domain            = var.auth_domain
-  keycloak_admin_name    = var.keycloak_admin_name
-  keycloak_admin_password = var.keycloak_admin_password
-  tenant_domain          = var.tenant_domain
-  oauth2_proxy_client_id = var.oauth2_proxy_client_id
-}
 # ---------------------------------------------
 # 5. Cloud Build Trigger モジュール
 # ---------------------------------------------

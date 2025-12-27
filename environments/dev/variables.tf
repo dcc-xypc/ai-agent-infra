@@ -22,12 +22,6 @@ variable "env_name" {
   default     = "dev"
 }
 
-variable "setup_keycloak_resources" {
-  description = "keycloak_resourcesのスイッチ"
-  type    = bool
-  default = false
-}
-
 variable "db_tier_config" {
   description = "環境に基づくインスタンスティアのマップです。"
   type        = map(string)

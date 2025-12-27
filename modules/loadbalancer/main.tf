@@ -26,7 +26,6 @@ resource "google_compute_region_network_endpoint_group" "frontend_neg" {
 }
 
 resource "google_compute_region_network_endpoint_group" "proxy_neg" {
-  count = var.oauth2_proxy_app_name != "" ? 1 : 0
   name                  = "proxy-neg-${var.env_name}"
   project               = var.project_id
   region                = var.region
@@ -70,7 +69,6 @@ resource "google_compute_backend_service" "frontend_backend" {
 }
 
 resource "google_compute_backend_service" "proxy_backend" {
-  count = var.oauth2_proxy_app_name != "" ? 1 : 0
   name                  = "proxy-backend-${var.env_name}"
   project               = var.project_id
   protocol              = "HTTP"
@@ -78,7 +76,7 @@ resource "google_compute_backend_service" "proxy_backend" {
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {
-    group = google_compute_region_network_endpoint_group.proxy_neg[0].id
+    group = google_compute_region_network_endpoint_group.proxy_neg.id
   }
 }
 
@@ -132,13 +130,12 @@ resource "google_compute_url_map" "url_map" {
 
   # Tenant のパス配布 (Frontend vs OAuth2 Proxy)
   path_matcher {
-    count = var.oauth2_proxy_app_name != "" ? 1 : 0
     name            = "tenant-matcher"
     default_service = google_compute_backend_service.frontend_backend.id
     
     path_rule {
       paths   = ["/api/*", "/oauth2/*"]
-      service = google_compute_backend_service.proxy_backend[0].id
+      service = google_compute_backend_service.proxy_backend.id
     }
   }
 }

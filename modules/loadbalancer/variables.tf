@@ -38,6 +38,3 @@ variable "tenant_domain" {
   description = "前端应用和 API 的域名"
   type        = string
 }
-variable "setup_keycloak_resources" {
-  type = bool
-}
