@@ -7,6 +7,14 @@ terraform {
   }
 }
 
+provider "keycloak" {
+  alias     = "keycloak_auth"
+  client_id = "admin-cli"
+  username  = var.keycloak_admin_name
+  password  = data.google_secret_manager_secret_version.keycloak_admin_password.secret_data
+  url       = "https://${var.auth_domain}"
+}
+
 # 0. 调用 API 模块
 module "project_apis" {
   source = "../../modules/api"
@@ -139,7 +147,9 @@ module "loadbalancer" {
 module "keycloak_setup" {
   source = "../../modules/keycloak_setup"
   count  = var.setup_keycloak_resources ? 1 : 0
-
+  providers = {
+    keycloak = keycloak.keycloak_auth
+  }
   project_id             = var.project_id
   auth_domain            = var.auth_domain
   keycloak_admin_name    = var.keycloak_admin_name

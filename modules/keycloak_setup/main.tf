@@ -14,13 +14,6 @@ terraform {
   }
 }
 
-provider "keycloak" {
-  client_id = "admin-cli"
-  username  = var.keycloak_admin_name
-  password  = data.google_secret_manager_secret_version.keycloak_admin_password.secret_data
-  url       = "https://${var.auth_domain}"
-}
-
 # 3. 定义 Keycloak 内部资源
 resource "keycloak_realm" "realm" {
   realm   = "ai-agent-realm"
