@@ -22,8 +22,8 @@ resource "google_compute_route" "default_internet_route" {
 resource "google_compute_subnetwork" "app_subnet" {
   name          = "${var.vpc_network_name}-subnet-${var.env_name}"
   project       = var.project_id
-  ip_cidr_range = var.subnet_cidr_app
   region        = var.region
+  ip_cidr_range = var.subnet_cidr_app
   network       = google_compute_network.vpc_network.self_link
 }
 

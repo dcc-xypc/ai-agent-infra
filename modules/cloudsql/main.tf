@@ -27,19 +27,19 @@ data "google_secret_manager_secret_version" "keycloak_db_password" {
 
 # 1. Cloud SQL インスタンス (プライベート IP のみ)
 resource "google_sql_database_instance" "postgres_instance" {
-  database_version = "POSTGRES_17"
   name             = "ai-agent-pg-instance-${var.env_name}"
   project          = var.project_id
   region           = var.region
+  database_version = "POSTGRES_17"
 
   settings {
-    tier = var.db_tier_config[var.env_name] 
-    disk_size = 10 
+    tier = var.db_tier_config[var.env_name]
     disk_type = "PD_SSD"
+    disk_size = 10
 
     ip_configuration {
-      ipv4_enabled    = false 
-      private_network = var.private_network_link 
+      ipv4_enabled    = false
+      private_network = var.private_network_link
     }
     maintenance_window {
       day  = 7 # Sunday
@@ -61,19 +61,19 @@ resource "google_sql_user" "postgres_admin" {
 }
 # 1.1 新增 MySQL 实例 (私有 IP 模式)
 resource "google_sql_database_instance" "mysql_instance" {
-  database_version = "MYSQL_8_0"  # 指定为 MySQL
   name             = "ai-agent-mysql-instance-${var.env_name}"
   project          = var.project_id
   region           = var.region
+  database_version = "MYSQL_8_0"  # 指定为 MySQL
 
   settings {
-    tier      = var.db_tier_config[var.env_name] 
-    disk_size = 10 
+    tier      = var.db_tier_config[var.env_name]
     disk_type = "PD_SSD"
+    disk_size = 10
 
     ip_configuration {
-      ipv4_enabled    = false 
-      private_network = var.private_network_link 
+      ipv4_enabled    = false
+      private_network = var.private_network_link
     }
     
     # MySQL 特有的配置项（可选，如不区分大小写等）
