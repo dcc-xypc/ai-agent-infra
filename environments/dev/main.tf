@@ -87,7 +87,7 @@ module "cloudrun" {
   external_cloudrun_sa_email = var.external_cloudrun_sa_email
   default_placeholder_image = var.default_placeholder_image
   connector_id             = module.vpc.connector_id
-  ai_agent_db_connection_name       = module.cloudsql.instance_connection_name
+  ai_agent_db_connection_name       = module.cloudsql.mysql_instance_connection_name
   auth_domain           = var.auth_domain
   tenant_domain         = var.tenant_domain
   keycloak_db_connection_name       = module.cloudsql.instance_connection_name 

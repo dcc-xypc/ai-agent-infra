@@ -8,6 +8,11 @@ output "instance_connection_name" {
   # 实例的 connection_name 属性会自动生成 'project:region:instance_name' 格式
   value       = google_sql_database_instance.postgres_instance.connection_name
 }
+output "mysql_instance_connection_name" {
+  description = "The connection name for the Cloud SQL instance, used by Cloud Run."
+  # 实例的 connection_name 属性会自动生成 'project:region:instance_name' 格式
+  value       = google_sql_database_instance.mysql_instance.connection_name
+}
 
 # ----------------------------------------------------
 # 2. AI Agent 数据库连接信息 (给 web-backend-app)
