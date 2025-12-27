@@ -136,6 +136,17 @@ module "loadbalancer" {
   ]
 }
 
+module "keycloak_setup" {
+  source = "./modules/keycloak_setup"
+  count  = var.setup_keycloak_resources ? 1 : 0
+
+  project_id             = var.project_id
+  auth_domain            = var.auth_domain
+  keycloak_admin_name    = var.keycloak_admin_name
+  keycloak_admin_password = var.keycloak_admin_password
+  tenant_domain          = var.tenant_domain
+  oauth2_proxy_client_id = var.oauth2_proxy_client_id
+}
 # ---------------------------------------------
 # 5. Cloud Build Trigger モジュール
 # ---------------------------------------------

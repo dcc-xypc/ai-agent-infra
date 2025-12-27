@@ -331,6 +331,7 @@ locals {
 }
 
 resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
+  count = var.setup_keycloak_resources ? 1 : 0
   name     = "oauth2-proxy-app-${var.env_name}"
   location = var.region
   project  = var.project_id
@@ -338,7 +339,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   depends_on = [
-    google_cloud_run_v2_service.web_backend_app
+    google_cloud_run_v2_service.web_backend_app,
+    module.keycloak_setup
   ]
 
   template {
@@ -359,7 +361,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env { 
         name  = "OAUTH2_PROXY_CLIENT_SECRET" 
-        value = var.oauth2_proxy_client_secret 
+        value = module.keycloak_init[0].client_secret
       }
       env { 
         name  = "OAUTH2_PROXY_COOKIE_SECRET" 

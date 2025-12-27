@@ -1,9 +1,9 @@
-# 文件名: iac-cloudbuild.yaml (使用 volumes 确保状态共享)
+# 文件名: iac-cloudbuild.yaml
 options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-# 0. 转运镜像（即便 GCR 已有，再次 push 也无害）
+# 0. 镜像准备 (保持不变)
 - name: 'gcr.io/cloud-builders/docker'
   id: 'mirror-image'
   entrypoint: 'bash'
@@ -13,7 +13,8 @@ steps:
       docker pull quay.io/oauth2-proxy/oauth2-proxy:v7.13.0 || exit 1
       docker tag quay.io/oauth2-proxy/oauth2-proxy:v7.13.0 gcr.io/${PROJECT_ID}/oauth2-proxy:v7.13.0
       docker push gcr.io/${PROJECT_ID}/oauth2-proxy:v7.13.0
-# 1. Terraform 初期化 (Init)
+
+# 1. Terraform 初始化 (共享 volumes 确保插件就绪)
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Init'
   args:
@@ -26,7 +27,8 @@ steps:
     - name: 'tf-data'
       path: '/root/.terraform'
 
-# 2. Terraform 構文検証 (Validate)
+# 2. Terraform 构文验证 (补回 Validate)
+# 这一步会检查所有 .tf 文件的语法，包括 Module 内部
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Validate'
   args:
@@ -36,32 +38,82 @@ steps:
     - name: 'tf-data'
       path: '/root/.terraform'
 
-# 3. Terraform プラン (Plan)
+# -----------------------------------------------------------------
+# STAGE 1: 部署基础架构 (不含 Keycloak 内部配置)
+# -----------------------------------------------------------------
+
+# 3. Stage 1 Plan
 - name: 'hashicorp/terraform:latest'
-  id: 'Terraform Plan'
+  id: 'Terraform Plan Stage 1'
   args:
     - '-chdir=environments/${_ENV_NAME}'
     - 'plan'
-    - '-out=/workspace/tfplan'
-    - '-input=false'
+    - '-var=setup_keycloak_resources=false'
+    - '-out=/workspace/tfplan_stage1'
   env:
-    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
     - 'TF_VAR_env_name=${_ENV_NAME}'
+    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
 
-# 4. Terraform 適用 (Apply)
+# 4. Stage 1 Apply
 - name: 'hashicorp/terraform:latest'
-  id: 'Terraform Apply'
+  id: 'Terraform Apply Stage 1'
   args:
     - '-chdir=environments/${_ENV_NAME}'
     - 'apply'
     - '-auto-approve'
-    - '/workspace/tfplan'
+    - '/workspace/tfplan_stage1'
+  volumes:
+    - name: 'tf-data'
+      path: '/root/.terraform'
+
+# -----------------------------------------------------------------
+# WAIT STEP: 等待 Keycloak 真正就绪
+# -----------------------------------------------------------------
+
+# 5. 健康检查探测
+- name: 'gcr.io/cloud-builders/curl'
+  id: 'Wait for Keycloak'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      echo "正在等待 Keycloak 启动并响应..."
+      until [ $(curl -s -o /dev/null -L -w "%{http_code}" https://auth.${_DOMAIN}/realms/master) -eq 200 ]; do
+        echo "Keycloak 尚未就绪，5秒后重试..."
+        sleep 5
+      done
+      echo "Keycloak 已成功启动！"
+
+# -----------------------------------------------------------------
+# STAGE 2: 自动化 Keycloak 内部配置 & 部署 OAuth2 Proxy
+# -----------------------------------------------------------------
+
+# 6. Stage 2 Plan
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Plan Stage 2'
+  args:
+    - '-chdir=environments/${_ENV_NAME}'
+    - 'plan'
+    - '-var=setup_keycloak_resources=true'
+    - '-out=/workspace/tfplan_stage2'
   env:
+    - 'TF_VAR_env_name=${_ENV_NAME}'
     - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
 
+# 7. Stage 2 Apply
+- name: 'hashicorp/terraform:latest'
+  id: 'Terraform Apply Stage 2'
+  args:
+    - '-chdir=environments/${_ENV_NAME}'
+    - 'apply'
+    - '-auto-approve'
+    - '/workspace/tfplan_stage2'
+  volumes:
+    - name: 'tf-data'
+      path: '/root/.terraform'
