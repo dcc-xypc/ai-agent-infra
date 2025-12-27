@@ -1,80 +1,105 @@
 variable "project_id" {
-  type = string
+  type        = string
+  description = "GCPプロジェクトID"
 }
 variable "project_number" {
-  type = string
+  type        = string
+  description = "GCPプロジェクト番号"
 }
 variable "region" {
-  type = string
+  type        = string
+  description = "リージョン"
 }
 variable "env_name" {
-  type = string
+  type        = string
+  description = "環境名"
 }
 variable "connector_id" {
-  type = string
+  type        = string
+  description = "VPCアクセスコネクタID"
 }
 variable "internal_lb_ip_address" {
-  type = string
+  type        = string
+  description = "内部ロードバランサーのIPアドレス"
 }
 variable "external_cloudrun_sa_email" {
-  type = string
+  type        = string
+  description = "Cloud Run用の外部サービスアカウントメール"
 }
 variable "default_placeholder_image" {
-  type = string
+  type        = string
+  description = "デフォルトのプレースホルダーイメージ"
 }
 variable "oauth2_proxy_image_gcr" {
-  type = string
+  type        = string
+  description = "OAuth2 ProxyのGCRイメージURL"
 }
 variable "ai_agent_db_connection_name" {
-  type = string
+  type        = string
+  description = "AI Agentデータベースの接続名"
 }
 variable "ai_agent_db_name" {
-  type = string
+  type        = string
+  description = "AI Agentデータベース名"
 }
 variable "ai_agent_db_user" {
-  type = string
+  type        = string
+  description = "AI Agentデータベースユーザー"
 }
 variable "ai_agent_db_password" {
-  type = string
-  sensitive = true
+  type        = string
+  description = "AI Agentデータベースパスワード"
+  sensitive   = true
 }
 variable "keycloak_db_connection_name" {
-  type = string
+  type        = string
+  description = "Keycloakデータベースの接続名"
 }
 variable "keycloak_db_name" {
-  type = string
+  type        = string
+  description = "Keycloakデータベース名"
 }
 variable "keycloak_db_user" {
-  type = string
+  type        = string
+  description = "Keycloakデータベースユーザー"
 }
 variable "keycloak_db_password" {
-  type = string
-  sensitive = true
+  type        = string
+  description = "Keycloakデータベースパスワード"
+  sensitive   = true
 }
 variable "keycloak_admin_name" {
-  type = string
+  type        = string
+  description = "Keycloak管理者名"
 }
 variable "keycloak_admin_password" {
-  type = string
-  sensitive = true
+  type        = string
+  description = "Keycloak管理者パスワード"
+  sensitive   = true
 }
 variable "keycloak_external_url" {
-  type = string
+  type        = string
+  description = "Keycloakの外部URL"
 }
 variable "auth_domain" {
-  type = string
+  type        = string
+  description = "認証ドメイン"
 }
 variable "tenant_domain" {
-  type = string
+  type        = string
+  description = "テナントドメイン"
 }
 variable "oauth2_proxy_client_id" {
-  type = string
+  type        = string
+  description = "OAuth2 ProxyクライアントID"
 }
 variable "oauth2_proxy_client_secret" {
-  type = string
-  sensitive = true
+  type        = string
+  description = "OAuth2 Proxyクライアントシークレット"
+  sensitive   = true
 }
 variable "oauth2_proxy_cookie_secret" {
-  type = string
-  sensitive = true
+  type        = string
+  description = "OAuth2 Proxyクッキーシークレット"
+  sensitive   = true
 }

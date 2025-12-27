@@ -1,29 +1,35 @@
 output "vpc_id" {
   value       = google_compute_network.vpc_network.id
-  description = "VPC 网络的唯一标识符 (self_link)。"
+  description = "VPCネットワークの唯一識別子 (ID)"
 }
 
 output "network_self_link" {
-  description = "作成されたVPCネットワークのセルフリンクです。"
   value       = google_compute_network.vpc_network.self_link
+  description = "作成されたVPCネットワークのセルフリンク"
 }
 
 output "connector_id" {
-  description = "VPCアクセスコネクタのセルフリンクです。"
   value       = google_vpc_access_connector.main_connector.id
+  description = "VPCアクセスコネクタのID"
 }
+
 output "app_subnet_id" {
   value       = google_compute_subnetwork.app_subnet.id
-  description = "应用子网的 ID"
+  description = "アプリケーションサブネットのID"
 }
+
 output "ops_subnet_id" {
-  description = "运维管理专用子网 ID，用于部署维护机（Ops VM）。"
   value       = google_compute_subnetwork.ops_subnet.id
+  description = "OpsサブネットのID（Ops VMデプロイ用）"
 }
+
 output "nat_status" {
-  value = var.enable_ops_nat ? google_compute_router_nat.nat[0].id : ""
+  value       = var.enable_ops_nat ? google_compute_router_nat.nat[0].id : ""
+  description = "NATのステータス"
 }
+
 output "internal_lb_ip_address" {
-  value = google_compute_address.internal_lb_static_ip.address
+  value       = google_compute_address.internal_lb_static_ip.address
+  description = "Internal ALB用の静的内部IPアドレス"
 }
 
