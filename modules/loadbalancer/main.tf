@@ -78,7 +78,7 @@ resource "google_compute_backend_service" "proxy_backend" {
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {
-    group = google_compute_region_network_endpoint_group.proxy_neg.id
+    group = google_compute_region_network_endpoint_group.proxy_neg[0].id
   }
 }
 
@@ -137,7 +137,7 @@ resource "google_compute_url_map" "url_map" {
     
     path_rule {
       paths   = ["/api/*", "/oauth2/*"]
-      service = google_compute_backend_service.proxy_backend.id
+      service = google_compute_backend_service.proxy_backend[0].id
     }
   }
 }
