@@ -44,6 +44,7 @@ resource "google_compute_subnetwork" "connector_subnet" {
   ip_cidr_range = var.connector_subnet_cidr 
   region        = var.region 
   network       = google_compute_network.vpc_network.self_link
+  private_ip_google_access = true
 }
 
 
