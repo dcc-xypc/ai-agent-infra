@@ -6,7 +6,7 @@
 resource "google_compute_network" "vpc_network" {
   name                    = "${var.vpc_network_name}-${var.env_name}"
   project                 = var.project_id
-  auto_create_subnetworks = false 
+  auto_create_subnetworks = false
 }
 
 resource "google_compute_route" "default_internet_route" {
@@ -23,7 +23,7 @@ resource "google_compute_subnetwork" "app_subnet" {
   name          = "${var.vpc_network_name}-subnet-${var.env_name}"
   project       = var.project_id
   ip_cidr_range = var.subnet_cidr_app
-  region        = var.region 
+  region        = var.region
   network       = google_compute_network.vpc_network.self_link
 }
 
@@ -34,14 +34,14 @@ resource "google_compute_subnetwork" "ops_subnet" {
   ip_cidr_range = var.subnet_cidr_ops
   region        = var.region
   network       = google_compute_network.vpc_network.self_link
-  private_ip_google_access = true 
+  private_ip_google_access = true
 }
 
 # 4. VPC アクセス コネクタ専用サブネット
 resource "google_compute_subnetwork" "connector_subnet" {
   name          = "${var.vpc_network_name}-connector-${var.env_name}"
   project       = var.project_id
-  ip_cidr_range = var.connector_subnet_cidr 
+  ip_cidr_range = var.connector_subnet_cidr
   region        = var.region 
   network       = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
@@ -96,7 +96,7 @@ resource "google_compute_subnetwork" "proxy_only_subnet" {
 # -----------------------------------------------------------
 # 9. Internal ALB 用の静的内部 IP アドレスの予約
 # -----------------------------------------------------------
-# Internal ALB (转发规则) で使用するための固定プライベート IP を予約します。
+# Internal ALB (転送ルール) で使用するための固定プライベート IP を予約します。
 # これにより、他のサービス（VPC Connector 等）との IP 衝突を回避し、
 # Terraform の循環参照（Cycle Error）も解消できます。
 
@@ -127,7 +127,7 @@ resource "google_compute_router_nat" "nat" {
   project                            = var.project_id
   nat_ip_allocate_option             = "AUTO_ONLY"
 
-  # 关键修改：仅针对特定子网
+  # 重要な変更：特定のサブネットに限定
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 
   subnetwork {

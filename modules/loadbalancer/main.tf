@@ -1,8 +1,8 @@
 # -----------------------------------------------------------
-# Load Balancer 模块: 支持双域名、HTTPS 及 自动跳转
+# Load Balancer モジュール: デュアルドメイン、HTTPS 及び自動リダイレクトをサポート
 # -----------------------------------------------------------
 
-# 1. 预约全局静态外部 IP 地址
+# 1. グローバル静的外部 IP アドレスを予約
 resource "google_compute_global_address" "lb_ip" {
   name    = "lb-ip-${var.env_name}"
   project = var.project_id
@@ -12,8 +12,8 @@ resource "google_compute_global_address" "lb_ip" {
   }
 }
 
-# 2. Serverless NEG (网络端点组)
-# 将 Cloud Run 服务映射到负载均衡器后端
+# 2. Serverless NEG (ネットワークエンドポイントグループ)
+# Cloud Run サービスをロードバランサーバックエンドにマッピング
 
 resource "google_compute_region_network_endpoint_group" "frontend_neg" {
   name                  = "frontend-neg-${var.env_name}"
@@ -54,7 +54,7 @@ resource "google_compute_region_network_endpoint_group" "backend_neg" {
   }
 }
 
-# 3. 后端服务 (Backend Services) 设置
+# 3. バックエンドサービス (Backend Services) 設定
 
 resource "google_compute_backend_service" "frontend_backend" {
   name                  = "frontend-backend-${var.env_name}"
@@ -92,7 +92,7 @@ resource "google_compute_backend_service" "keycloak_backend" {
   }
 }
 
-# 4. Google 托管的 SSL 证书 (自动申请与续期)
+# 4. Google マネージド SSL 証明書 (自動申請と更新)
 resource "google_compute_managed_ssl_certificate" "default" {
   name    = "managed-cert-${var.env_name}"
   project = var.project_id
@@ -104,31 +104,31 @@ resource "google_compute_managed_ssl_certificate" "default" {
   }
 }
 
-# 5. URL Map (核心路由逻辑)
+# 5. URL Map (コアルーティングロジック)
 resource "google_compute_url_map" "url_map" {
   name            = "url-map-${var.env_name}"
   project         = var.project_id
   default_service = google_compute_backend_service.frontend_backend.id
 
-  # 域名 1: Keycloak 认证中心
+  # ドメイン 1: Keycloak 認証センター
   host_rule {
     hosts        = [var.auth_domain]
     path_matcher = "keycloak-matcher"
   }
 
-  # 域名 2: 租户前端及安全代理 API
+  # ドメイン 2: テナントフロントエンドおよびセキュアプロキシ API
   host_rule {
     hosts        = [var.tenant_domain]
     path_matcher = "tenant-matcher"
   }
 
-  # Keycloak 的路径分发
+  # Keycloak のパス配布
   path_matcher {
     name            = "keycloak-matcher"
     default_service = google_compute_backend_service.keycloak_backend.id
   }
 
-  # Tenant 的路径分发 (Frontend vs OAuth2 Proxy)
+  # Tenant のパス配布 (Frontend vs OAuth2 Proxy)
   path_matcher {
     name            = "tenant-matcher"
     default_service = google_compute_backend_service.frontend_backend.id
@@ -140,7 +140,7 @@ resource "google_compute_url_map" "url_map" {
   }
 }
 
-# 6. HTTP 到 HTTPS 的自动跳转配置
+# 6. HTTP から HTTPS への自動リダイレクト設定
 resource "google_compute_url_map" "https_redirect" {
   name    = "https-redirect-${var.env_name}"
   project = var.project_id
@@ -152,9 +152,9 @@ resource "google_compute_url_map" "https_redirect" {
   }
 }
 
-# 7. 目标代理 (Target Proxies)
+# 7. ターゲットプロキシ (Target Proxies)
 
-# HTTPS 代理: 绑定 SSL 证书和 URL Map
+# HTTPS プロキシ: SSL 証明書と URL Map をバインド
 resource "google_compute_target_https_proxy" "https_proxy" {
   name             = "https-proxy-${var.env_name}"
   project          = var.project_id
@@ -162,16 +162,16 @@ resource "google_compute_target_https_proxy" "https_proxy" {
   ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
 }
 
-# HTTP 代理: 仅用于执行重定向到 HTTPS
+# HTTP プロキシ: HTTPS へのリダイレクト実行専用
 resource "google_compute_target_http_proxy" "http_redirect_proxy" {
   name    = "http-proxy-${var.env_name}"
   project = var.project_id
   url_map = google_compute_url_map.https_redirect.id
 }
 
-# 8. 全球转发规则 (Global Forwarding Rules)
+# 8. グローバルフォワーディングルール (Global Forwarding Rules)
 
-# 监听 443 端口 (HTTPS)
+# 443 ポートをリッスン (HTTPS)
 resource "google_compute_global_forwarding_rule" "https_rule" {
   name                  = "forwarding-rule-https-${var.env_name}"
   project               = var.project_id
@@ -182,7 +182,7 @@ resource "google_compute_global_forwarding_rule" "https_rule" {
   ip_address            = google_compute_global_address.lb_ip.address
 }
 
-# 监听 80 端口 (HTTP)
+# 80 ポートをリッスン (HTTP)
 resource "google_compute_global_forwarding_rule" "http_rule" {
   name                  = "forwarding-rule-http-${var.env_name}"
   project               = var.project_id
@@ -194,11 +194,11 @@ resource "google_compute_global_forwarding_rule" "http_rule" {
 }
 
 # -----------------------------------------------------------
-# 9. Internal Application Load Balancer (IALB) 配置
+# 9. Internal Application Load Balancer (IALB) 設定
 # -----------------------------------------------------------
 
-# A. 内部后端服务 (指向业务 Cloud Run)
-# 使用 INTERNAL_MANAGED 方案来确保流量在内网传输
+# A. 内部バックエンドサービス (業務 Cloud Run を指す)
+# INTERNAL_MANAGED スキームを使用してトラフィックがイントラネット内を流れるようにする
 resource "google_compute_region_backend_service" "internal_backend" {
   name                  = "internal-backend-${var.env_name}"
   project               = var.project_id
@@ -213,7 +213,7 @@ resource "google_compute_region_backend_service" "internal_backend" {
   }
 }
 
-# B. 内部 URL Map (定义内网路由规则)
+# B. 内部 URL Map (イントラネットルーティングルールを定義)
 resource "google_compute_region_url_map" "internal_url_map" {
   name            = "internal-url-map-${var.env_name}"
   project         = var.project_id
@@ -221,7 +221,7 @@ resource "google_compute_region_url_map" "internal_url_map" {
   default_service = google_compute_region_backend_service.internal_backend.id
 }
 
-# C. 内部 HTTP 代理 (处理内网 HTTP 请求)
+# C. 内部 HTTP プロキシ (イントラネット HTTP リクエストを処理)
 resource "google_compute_region_target_http_proxy" "internal_target_proxy" {
   name    = "internal-target-proxy-${var.env_name}"
   project = var.project_id
@@ -229,8 +229,8 @@ resource "google_compute_region_target_http_proxy" "internal_target_proxy" {
   url_map = google_compute_region_url_map.internal_url_map.id
 }
 
-# D. 内部转发规则 (IALB 的私有入口)
-# 这是 OAuth2-Proxy 将会访问的“内部终点”
+# D. 内部フォワーディングルール (IALB のプライベートエントリー)
+# これは OAuth2-Proxy がアクセスする「内部エンドポイント」である
 resource "google_compute_forwarding_rule" "internal_forwarding_rule" {
   name                  = "internal-forwarding-rule-${var.env_name}"
   project               = var.project_id

@@ -1,8 +1,8 @@
-# 2. 获取当前项目默认的 Compute Engine 服务账号
+# 2. 現在のプロジェクトのデフォルト Compute Engine サービスアカウントを取得
 data "google_compute_default_service_account" "default" {
   project = var.project_id
 }
-# 1. 运维维护专用 VM (Ops VM)
+# 1. 運用保守専用 VM (Ops VM)
 resource "google_compute_instance" "ops_vm" {
   name         = "ops-vm-${var.env_name}"
   machine_type = "e2-micro" # 维护用，最低配置即可
@@ -30,7 +30,7 @@ resource "google_compute_instance" "ops_vm" {
   allow_stopping_for_update = true
   service_account {
     email  = data.google_compute_default_service_account.default.email
-    scopes = ["cloud-platform"] 
+    scopes = ["cloud-platform"]
   }
   metadata = {
     enable-oslogin = "true"
@@ -38,8 +38,8 @@ resource "google_compute_instance" "ops_vm" {
   }
 }
 
-# 2. IAP 专用防火墙规则
-# 仅允许 Google IAP 网段通过 22 端口访问带有 ops-admin 标签的机器
+# 2. IAP 専用ファイアウォールルール
+# Google IAP セグメントから ops-admin タグのついたマシンへの 22 ポートアクセスのみを許可
 resource "google_compute_firewall" "allow_iap_ssh_ops" {
   name    = "fw-allow-iap-ssh-ops-${var.env_name}"
   network = var.vpc_id

@@ -2,7 +2,7 @@
 # Cloud SQL モジュール: Cloud SQL インスタンスとデータベースを作成
 # -----------------------------------------------------------
 
-#  0. 获取密码
+# 0. パスワードを取得
 data "google_secret_manager_secret_version" "pg_admin_password" {
   secret  = var.pg_admin_password
   project = var.project_id
@@ -13,13 +13,13 @@ data "google_secret_manager_secret_version" "mysql_admin_password" {
   project = var.project_id
 }
 
-# 获取 AI Agent 数据库密码
+# AI Agent データベースパスワードを取得
 data "google_secret_manager_secret_version" "ai_agent_db_password" {
   secret  = var.ai_agent_db_password
   project = var.project_id
 }
 
-# 获取 Keycloak 数据库密码
+# Keycloak データベースパスワードを取得
 data "google_secret_manager_secret_version" "keycloak_db_password" {
   secret  = var.keycloak_db_password
   project = var.project_id
@@ -93,7 +93,7 @@ resource "google_sql_user" "mysql_admin" {
   depends_on = [google_sql_database_instance.mysql_instance]
 }
 # ----------------------------------------------------
-# 2. 创建应用程序数据库 (AI Agent)
+# 2. アプリケーションデータベースを作成 (AI Agent)
 # ----------------------------------------------------
 resource "google_sql_database" "ai_agent_db" {
   name     = var.ai_agent_db_name
@@ -105,7 +105,7 @@ resource "google_sql_database" "ai_agent_db" {
 }
 
 # ----------------------------------------------------
-# 3. 创建身份验证数据库 (Keycloak)
+# 3. 認証データベースを作成 (Keycloak)
 # ----------------------------------------------------
 resource "google_sql_database" "keycloak_db" {
   name     = var.keycloak_db_name
@@ -117,7 +117,7 @@ resource "google_sql_database" "keycloak_db" {
   ]
 }
 # ----------------------------------------------------
-# 4. 创建 AI Agent 数据库用户
+# 4. AI Agent データベースユーザーを作成
 # ----------------------------------------------------
 resource "google_sql_user" "ai_agent_user" {
   name     = var.ai_agent_db_user
@@ -133,7 +133,7 @@ resource "google_sql_user" "ai_agent_user" {
 }
 
 # ----------------------------------------------------
-# 5. 创建 Keycloak 数据库用户
+# 5. Keycloak データベースユーザーを作成
 # ----------------------------------------------------
 resource "google_sql_user" "keycloak_user" {
   name     = var.keycloak_db_user

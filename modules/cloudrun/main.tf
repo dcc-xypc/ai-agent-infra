@@ -47,7 +47,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   name     = "web-backend-app-${var.env_name}"
   location = var.region
   project  = var.project_id
-    
+
   ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
