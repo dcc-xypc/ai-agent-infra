@@ -124,6 +124,7 @@ resource "google_sql_user" "ai_agent_user" {
   instance = google_sql_database_instance.mysql_instance.name
   project  = var.project_id
   
+  host     = "%"
   password = data.google_secret_manager_secret_version.ai_agent_db_password.secret_data
 
   depends_on = [
