@@ -484,9 +484,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
 }
 
 resource "google_cloud_run_v2_service_iam_member" "oauth2_proxy_invoker" {
+  count = var.setup_keycloak_resources ? 1 : 0
   project  = var.project_id
   location = var.region
-  name     = google_cloud_run_v2_service.oauth2_proxy_app.name
+  name     = google_cloud_run_v2_service.oauth2_proxy_app[0].name
   role     = "roles/run.invoker"
   member   = "allUsers" 
 }

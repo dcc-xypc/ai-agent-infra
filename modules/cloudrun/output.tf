@@ -29,11 +29,11 @@ output "auth_keycloak_app_url" {
 }
 
 output "oauth2_proxy_app_name" {
-  value       = google_cloud_run_v2_service.oauth2_proxy_app.name
+  value       = var.setup_keycloak_resources ? google_cloud_run_v2_service.oauth2_proxy_app[0].name : ""
   description = "Cloud Runサービスの名前です（oauth2-proxy-app）"
 }
 
 output "oauth2_proxy_app_url" {
-  value       = google_cloud_run_v2_service.oauth2_proxy_app.uri
+  value       = var.setup_keycloak_resources ? google_cloud_run_v2_service.oauth2_proxy_app[0].uri : ""
   description = "Cloud Runサービスの公開URLです（oauth2-proxy-app）"
 }
