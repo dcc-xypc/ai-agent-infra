@@ -29,103 +29,97 @@ variable "db_tier_config" {
 }
 
 variable "pg_admin_password" {
-  description = "The password for the AI Agent database instance."
+  description = "PostgreSQLの管理者パスワードです。"
   type        = string
   default     = "pg_admin_password"
 }
 
 variable "mysql_admin_password" {
-  description = "The password for the AI Agent database instance."
+  description = "MySQLの管理者パスワードです。"
   type        = string
   default     = "mysql_admin_password"
 }
 
 variable "ai_agent_db_name" {
-  description = "The name for the AI Agent application database."
+  description = "AIエージェントアプリケーションデータベース名です。"
   type        = string
   default     = "ai_agent"
 }
 
 variable "ai_agent_db_user" {
-  description = "The user for the AI Agent application database."
+  description = "AIエージェントアプリケーションデータベースユーザーです。"
   type        = string
   default     = "ai_agent_user"
 }
 
 variable "ai_agent_db_password" {
-  description = "The password for the AI Agent application database."
+  description = "AIエージェントアプリケーションデータベースパスワードです。"
   type        = string
   default     = "ai_agent_db_password"
 }
 
 variable "keycloak_db_name" {
-  description = "The name for the Keycloak authentication database."
+  description = "Keycloak認証データベース名です。"
   type        = string
   default     = "keycloak"
 }
 
 variable "keycloak_db_user" {
-  description = "The user for the Keycloak authentication database."
+  description = "Keycloak認証データベースユーザーです。"
   type        = string
   default     = "keycloak_user"
 }
 
 variable "keycloak_db_password" {
-  description = "The password for the Keycloak authentication database."
+  description = "Keycloak認証データベースパスワードです。"
   type        = string
   default     = "keycloak_db_password"
 }
 
-# --- Cloud Run変数 ---
+# --- Cloud Run変数 --- 
 variable "default_placeholder_image" {
-  description = "CI/CD 部署之前使用的占位符镜像。默认使用 Google Cloud Run 官方 hello 镜像。"
+  description = "CI/CDデプロイ前に使用するプレースホルダーイメージです。デフォルトはGoogle Cloud Run公式のhelloイメージです。"
   type        = string
   default     = "gcr.io/cloudrun/hello"
 }
 
 variable "oauth2_proxy_image_gcr" {
-  description = "OAuth2 Proxy 服务的目标镜像。"
+  description = "OAuth2 Proxyサービスの目標イメージです。"
   type        = string
   default     = ""
 }
 
 variable "keycloak_admin_name" {
-  description = "The name for the Keycloak authentication database."
+  description = "Keycloak管理者名です。"
   type        = string
   default     = "kcadmin"
 }
 
 variable "keycloak_admin_password" {
-  description = "The password for the Keycloak authentication database."
+  description = "Keycloak管理者パスワードです。"
   type        = string
   default     = "keycloak_admin_password"
 }
 
-variable "keycloak_external_url" {
-  description = "The password for the Keycloak authentication database."
-  type        = string
-  default     = "https://auth.ai-agent.tcic-cloud.com"
-}
-
 variable "oauth2_proxy_client_id" {
-  description = "The password for the Keycloak authentication database."
+  description = "OAuth2 ProxyのクライアントIDです。"
   type        = string
   default     = "ai-agent-client"
 }
 
 variable "oauth2_proxy_client_secret" {
-  description = "The password for the Keycloak authentication database."
+  description = "OAuth2 Proxyのクライアントシークレットです。"
   type        = string
   default     = "nnUpyPmKY6HwAxTdZNXnoic3A3bbvpB9"
 }
 
 variable "oauth2_proxy_cookie_secret" {
-  description = "The password for the Keycloak authentication database."
+  description = "OAuth2 Proxyのクッキーシークレットです。"
   type        = string
   default     = "5IW9m4YHDWHf8AkuCzU_3b1c1Q9NoLlCJW0lKxgvgXE="
 }
 
-# --- GitHub (標準) トリガー変数 ---
+# --- GitHub (標準) トリガー変数 --- 
 variable "github_repo_owner" {
   description = "リポジトリを所有するGitHubの組織名またはユーザー名です。"
   type        = string
@@ -144,14 +138,14 @@ variable "trigger_branch" {
   default     = "^main$"
 }
 
-# --- ネットワーク変数 ---
+# --- ネットワーク変数 --- 
 variable "external_cloudrun_sa_email" {
-  description = "Cloud Run 运行服务账户的邮箱地址，用于执行应用代码。"
+  description = "Cloud Runサービスが使用するサービスアカウントのメールアドレスです。"
   type        = string
   default     = "sa-cloud-run-keycloak@q14020-d-toyota-imap-dev.iam.gserviceaccount.com" 
 }
 
-# --- ネットワーク変数 ---
+# --- ネットワーク変数 --- 
 variable "vpc_network_name" {
   description = "VPCネットワークのベース名です。"
   type        = string
@@ -183,17 +177,19 @@ variable "reserved_ip_range_name" {
 }
 
 variable "enable_ops_nat" {
-  type    = bool
-  default = false
+  description = "OpsサブネットのNATを有効にするかどうかです。"
+  type        = bool
+  default     = false
 }
 
 variable "tenant_domain" {
+  description = "テナントフロントエンドアプリケーションとAPIのドメイン名です。"
   type        = string
   default     = "tenant1.ai-agent.tcic-cloud.com"
 }
 
 variable "auth_domain" {
+  description = "Keycloak認証サービスのドメイン名です。"
   type        = string
   default     = "auth.ai-agent.tcic-cloud.com"
 }
-

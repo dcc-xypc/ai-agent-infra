@@ -366,7 +366,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_OIDC_ISSUER_URL"
-        value = "${var.keycloak_external_url}/realms/ai-agent-realm" 
+        value = "https://${var.auth_domain}/realms/ai-agent-realm" 
       }
       env {
         name  = "OAUTH2_PROXY_REDIRECT_URL"

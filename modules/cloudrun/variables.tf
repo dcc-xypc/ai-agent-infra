@@ -77,10 +77,6 @@ variable "keycloak_admin_password" {
   description = "Keycloak管理者パスワード"
   sensitive   = true
 }
-variable "keycloak_external_url" {
-  type        = string
-  description = "Keycloakの外部URL"
-}
 variable "auth_domain" {
   type        = string
   description = "認証ドメイン"
