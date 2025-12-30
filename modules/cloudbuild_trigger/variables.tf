@@ -16,3 +16,9 @@ variable "github_repo_name" {
 variable "trigger_branch" {
   type = string
 }
+variable "resource_prefix" {
+  type = string
+}
+variable "common_labels" {
+  type = map(string)
+}

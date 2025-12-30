@@ -40,3 +40,9 @@ variable "keycloak_db_password" {
 variable "private_network_link" {
   type = string
 }
+variable "resource_prefix" {
+  type = string
+}
+variable "common_labels" {
+  type = map(string)
+}

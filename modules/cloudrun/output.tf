@@ -1,39 +1,39 @@
 output "web_frontend_app_name" {
   value       = google_cloud_run_v2_service.web_frontend_app.name
-  description = "Cloud Runサービスの名前です（web-frontend-app）"
+  description = "Frontend Cloud Run サービスの名前 (${var.resource_prefix}-cr-web-front)"
 }
 
 output "web_frontend_app_url" {
   value       = google_cloud_run_v2_service.web_frontend_app.uri
-  description = "Cloud Runサービスの公開URLです（web-frontend-app）"
+  description = "Frontend Cloud Run サービスの URI"
 }
 
 output "web_backend_app_name" {
   value       = google_cloud_run_v2_service.web_backend_app.name
-  description = "Cloud Runサービスの名前です（web-backend-app）"
+  description = "Backend Cloud Run サービスの名前 (${var.resource_prefix}-cr-web-back)"
 }
 
 output "web_backend_app_url" {
   value       = google_cloud_run_v2_service.web_backend_app.uri
-  description = "Cloud Runサービスの公開URLです（web-backend-app）"
+  description = "Backend Cloud Run サービスの URI"
 }
 
 output "auth_keycloak_app_name" {
   value       = google_cloud_run_v2_service.auth_keycloak_app.name
-  description = "Cloud Runサービスの名前です（auth-keycloak-app）"
+  description = "Keycloak Cloud Run サービスの名前 (${var.resource_prefix}-cr-auth-kc)"
 }
 
 output "auth_keycloak_app_url" {
   value       = google_cloud_run_v2_service.auth_keycloak_app.uri
-  description = "Cloud Runサービスの公開URLです（auth-keycloak-app）"
+  description = "Keycloak Cloud Run サービスの URI"
 }
 
 output "oauth2_proxy_app_name" {
   value       = google_cloud_run_v2_service.oauth2_proxy_app.name
-  description = "Cloud Runサービスの名前です（oauth2-proxy-app）"
+  description = "OAuth2 Proxy Cloud Run サービスの名前 (${var.resource_prefix}-cr-proxy)"
 }
 
 output "oauth2_proxy_app_url" {
   value       = google_cloud_run_v2_service.oauth2_proxy_app.uri
-  description = "Cloud Runサービスの公開URLです（oauth2-proxy-app）"
+  description = "OAuth2 Proxy Cloud Run サービスの URI"
 }

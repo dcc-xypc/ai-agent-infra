@@ -52,16 +52,16 @@ steps:
       path: '/root/.terraform'
 
 # 4. Terraform 適用 (Apply)
-- name: 'hashicorp/terraform:latest'
-  id: 'Terraform Apply'
-  args:
-    - '-chdir=environments/${_ENV_NAME}'
-    - 'apply'
-    - '-auto-approve'
-    - '/workspace/tfplan'
-  env:
-    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
-  volumes:
-    - name: 'tf-data'
-      path: '/root/.terraform'
+# - name: 'hashicorp/terraform:latest'
+#   id: 'Terraform Apply'
+#   args:
+#     - '-chdir=environments/${_ENV_NAME}'
+#     - 'apply'
+#     - '-auto-approve'
+#     - '/workspace/tfplan'
+#   env:
+#     - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
+#   volumes:
+#     - name: 'tf-data'
+#       path: '/root/.terraform'
 

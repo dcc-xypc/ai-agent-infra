@@ -13,8 +13,8 @@ output "connector_id" {
   description = "VPCアクセスコネクタのID"
 }
 
-output "app_subnet_id" {
-  value       = google_compute_subnetwork.app_subnet.id
+output "ilb_subnet_id" {
+  value       = google_compute_subnetwork.ilb_subnet.id
   description = "アプリケーションサブネットのID"
 }
 

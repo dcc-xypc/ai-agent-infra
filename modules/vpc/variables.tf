@@ -1,36 +1,33 @@
 variable "project_id" {
-  type        = string
-  description = "GCPプロジェクトID"
+  type = string
 }
 variable "region" {
-  type        = string
-  description = "リージョン"
+  type = string
 }
 variable "env_name" {
-  type        = string
-  description = "環境名"
+  type = string
 }
 variable "vpc_network_name" {
-  type        = string
-  description = "VPCネットワーク名"
+  type = string
 }
 variable "subnet_cidr_app" {
-  type        = string
-  description = "アプリケーションサブネットのCIDR範囲"
+  type = string
 }
 variable "subnet_cidr_ops" {
-  type        = string
-  description = "OpsサブネットのCIDR範囲"
+  type = string
 }
 variable "connector_subnet_cidr" {
-  type        = string
-  description = "コネクタサブネットのCIDR範囲"
+  type = string
 }
 variable "enable_ops_nat" {
-  type        = bool
-  description = "Ops NATを有効にするかどうか"
+  type = bool
 }
 variable "reserved_ip_range_name" {
-  type        = string
-  description = "予約IP範囲名"
+  type = string
+}
+variable "resource_prefix" {
+  type = string
+}
+variable "common_labels" {
+  type = map(string)
 }

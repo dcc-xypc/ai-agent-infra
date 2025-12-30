@@ -1,10 +1,11 @@
 # -----------------------------------------------------------------
-# 1. 前端 Web 应用: web-frontend-app (对外公开, 无 DB)
+# 1. 前端 Web 应用: web-frontend-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "web_frontend_app" {
-  name     = "web-frontend-app-${var.env_name}"
+  name     = "${var.resource_prefix}-cr-web-front"
   location = var.region
   project  = var.project_id
+  labels   = var.common_labels
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
@@ -41,23 +42,22 @@ resource "google_cloud_run_v2_service_iam_member" "web_frontend_invoker" {
 }
 
 # -----------------------------------------------------------------
-# 2. Web 后端应用: web-backend-app (内部服务, 连接 AI Agent DB, 被 Proxy 保护)
+# 2. Web 后端应用: web-backend-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "web_backend_app" {
-  name     = "web-backend-app-${var.env_name}"
+  name     = "${var.resource_prefix}-cr-web-back"
   location = var.region
   project  = var.project_id
+  labels   = var.common_labels
 
   ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
     service_account = var.external_cloudrun_sa_email
 
-
     containers {
       image = var.default_placeholder_image
       
-      # 数据库连接配置 (AI Agent DB)
       env {
         name  = "AI_AGENT_DB_CONN_NAME"
         value = var.ai_agent_db_connection_name 
@@ -84,7 +84,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
         value = ""
       }
       volume_mounts {
-        name       = "cloudsql"
+        name        = "cloudsql"
         mount_path = "/cloudsql"
       }
     }
@@ -111,23 +111,22 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   }
 }
 
-# 2.1 后端 Invoker 权限 (仅允许 OAuth2 Proxy)
 resource "google_cloud_run_v2_service_iam_member" "web_backend_invoker" {
   project  = var.project_id
   location = var.region
   name     = google_cloud_run_v2_service.web_backend_app.name
   role     = "roles/run.invoker"
-  #member   = "serviceAccount:${var.external_cloudrun_sa_email}" 
   member   = "allUsers"
 }
 
 # -----------------------------------------------------------------
-# 4. Keycloak 认证服务: auth-keycloak-app (对外公开, 连接 Keycloak DB)
+# 3. Keycloak 认证服务: auth-keycloak-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "auth_keycloak_app" {
-  name     = "auth-keycloak-app-${var.env_name}"
+  name     = "${var.resource_prefix}-cr-auth-kc"
   location = var.region
   project  = var.project_id
+  labels   = var.common_labels
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
@@ -142,7 +141,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
     containers {
       image = "gcr.io/q14020-d-toyota-imap-dev/auth-keycloak-app:d0a0e2e"
       volume_mounts {
-        name       = "cloudsql"
+        name        = "cloudsql"
         mount_path = "/cloudsql"
       }
       
@@ -245,7 +244,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       resources {
         limits = {
           cpu    = "1"
-          memory = "2Gi" # Keycloak 启动较重，建议至少 2Gi
+          memory = "2Gi"
         }
       }
     }
@@ -281,7 +280,7 @@ resource "google_cloud_run_v2_service_iam_member" "auth_keycloak_invoker" {
 }
 
 # -----------------------------------------------------------------
-# 5. OAuth2 Proxy 服务: oauth2-proxy-app (代理后端认证)
+# 4. OAuth2 Proxy 服务: oauth2-proxy-app
 # -----------------------------------------------------------------
 locals {
   # 如果变量 oauth2_proxy_image_gcr 为空，则使用拼接后的默认值
@@ -289,9 +288,10 @@ locals {
 }
 
 resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
-  name     = "oauth2-proxy-app-${var.env_name}"
+  name     = "${var.resource_prefix}-cr-proxy"
   location = var.region
   project  = var.project_id
+  labels   = var.common_labels
   
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
