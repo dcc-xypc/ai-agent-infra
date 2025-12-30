@@ -16,8 +16,6 @@ resource "google_compute_route" "default_internet_route" {
   next_hop_gateway = "default-internet-gateway"
   priority         = 1000
   project          = var.project_id
-
-  labels         = var.common_labels 
 }
 
 # 2. Internal LB 専用サブネット
@@ -27,8 +25,6 @@ resource "google_compute_subnetwork" "ilb_subnet" {
   region        = var.region
   ip_cidr_range = var.subnet_cidr_app
   network       = google_compute_network.vpc_network.self_link
-  
-  labels        = var.common_labels
 }
 
 # 3. devops vm 専用サブネット
@@ -39,8 +35,6 @@ resource "google_compute_subnetwork" "ops_subnet" {
   region        = var.region
   network       = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
-
-  labels        = var.common_labels
 }
 
 # 4. VPC アクセス コネクタ専用サブネット
@@ -51,8 +45,6 @@ resource "google_compute_subnetwork" "connector_subnet" {
   region        = var.region 
   network       = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
-
-  labels        = var.common_labels
 }
 
 # 5. VPC アクセス コネクタ
@@ -64,7 +56,6 @@ resource "google_vpc_access_connector" "main_connector" {
   subnet {
     name = google_compute_subnetwork.connector_subnet.name
   }
-  labels        = var.common_labels
 
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
@@ -97,8 +88,6 @@ resource "google_compute_subnetwork" "proxy_only_subnet" {
   ip_cidr_range = "10.129.0.0/26"
   purpose       = "REGIONAL_MANAGED_PROXY"
   role          = "ACTIVE"
-
-  labels        = var.common_labels
 }
 
 # 9. Internal ALB 用の静的内部 IP アドレス
@@ -120,8 +109,6 @@ resource "google_compute_router" "router" {
   region  = var.region
   network = google_compute_network.vpc_network.id
   project = var.project_id
-
-  labels  = var.common_labels
 }
 
 # 11. NAT
