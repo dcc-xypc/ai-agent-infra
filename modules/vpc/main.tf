@@ -56,7 +56,10 @@ resource "google_vpc_access_connector" "main_connector" {
   subnet {
     name = google_compute_subnetwork.connector_subnet.name
   }
-
+  min_instances = 2
+  max_instances = 3
+  machine_type = "e2-micro"
+  
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
 
