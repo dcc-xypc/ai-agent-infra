@@ -1,6 +1,6 @@
 output "web_frontend_app_name" {
   value       = google_cloud_run_v2_service.web_frontend_app.name
-  description = "Frontend Cloud Run サービスの名前 (${var.resource_prefix}-cr-web-front)"
+  description = "Frontend Cloud Run サービスの名前"
 }
 
 output "web_frontend_app_url" {
@@ -10,7 +10,7 @@ output "web_frontend_app_url" {
 
 output "web_backend_app_name" {
   value       = google_cloud_run_v2_service.web_backend_app.name
-  description = "Backend Cloud Run サービスの名前 (${var.resource_prefix}-cr-web-back)"
+  description = "Backend Cloud Run サービスの名前"
 }
 
 output "web_backend_app_url" {
@@ -20,7 +20,7 @@ output "web_backend_app_url" {
 
 output "auth_keycloak_app_name" {
   value       = google_cloud_run_v2_service.auth_keycloak_app.name
-  description = "Keycloak Cloud Run サービスの名前 (${var.resource_prefix}-cr-auth-kc)"
+  description = "Keycloak Cloud Run サービスの名前"
 }
 
 output "auth_keycloak_app_url" {
@@ -30,7 +30,7 @@ output "auth_keycloak_app_url" {
 
 output "oauth2_proxy_app_name" {
   value       = google_cloud_run_v2_service.oauth2_proxy_app.name
-  description = "OAuth2 Proxy Cloud Run サービスの名前 (${var.resource_prefix}-cr-proxy)"
+  description = "OAuth2 Proxy Cloud Run サービスの名前"
 }
 
 output "oauth2_proxy_app_url" {

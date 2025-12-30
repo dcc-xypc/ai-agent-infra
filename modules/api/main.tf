@@ -1,12 +1,6 @@
 # -----------------------------------------------------------
 # API モジュール: インフラストラクチャに必要なすべての Google Cloud API を有効化
 # -----------------------------------------------------------
-
-variable "project_id" {
-  description = "The GCP project ID to enable services on."
-  type        = string
-}
-
 # 1. コアインフラストラクチャとネットワーク API
 resource "google_project_service" "compute" {
   project = var.project_id
