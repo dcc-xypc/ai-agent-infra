@@ -8,7 +8,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
   labels   = var.common_labels
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
-
+  deletion_protection = false
   template {
     service_account = var.external_cloudrun_sa_email
     session_affinity = true
@@ -51,7 +51,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
   labels   = var.common_labels
 
   ingress  = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
-
+  deletion_protection = false
   template {
     service_account = var.external_cloudrun_sa_email
 
@@ -129,7 +129,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
   labels   = var.common_labels
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
-
+  deletion_protection = false
   template {
     service_account = var.external_cloudrun_sa_email
     session_affinity = true 
@@ -294,7 +294,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
   labels   = var.common_labels
   
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
-
+  deletion_protection = false
   depends_on = [
     google_cloud_run_v2_service.web_backend_app
   ]
