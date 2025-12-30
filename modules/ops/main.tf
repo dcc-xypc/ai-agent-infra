@@ -1,15 +1,22 @@
-# 2. 現在のプロジェクトのデフォルト Compute Engine サービスアカウントを取得
+# -----------------------------------------------------------
+# Ops モジュール: 運用保守専用 VM と IAP ファイアウォール
+# -----------------------------------------------------------
+
+# 1. 現在のプロジェクトのデフォルト Compute Engine サービスアカウントを取得
 data "google_compute_default_service_account" "default" {
   project = var.project_id
 }
-# 1. 運用保守専用 VM (Ops VM)
+
+# 2. 運用保守専用 VM (Ops VM)
 resource "google_compute_instance" "ops_vm" {
-  name         = "ops-vm-${var.env_name}"
-  machine_type = "e2-micro" # 维护用，最低配置即可
+  name         = "${var.resource_prefix}-vm-ops"
+  machine_type = "e2-micro"
   zone         = "${var.region}-a"
   project      = var.project_id
 
-  tags = ["ops-admin"] # 用于防火墙规则匹配
+  tags = ["ops-admin"]
+
+  labels = var.common_labels
 
   metadata_startup_script = <<-EOT
     #!/bin/bash
@@ -28,20 +35,21 @@ resource "google_compute_instance" "ops_vm" {
   }
 
   allow_stopping_for_update = true
+  
   service_account {
-    email  = data.google_compute_default_service_account.default.email
+    email  = data.google_compute_default_service_account.default.email [cite: 4]
     scopes = ["cloud-platform"]
   }
+
   metadata = {
-    enable-oslogin = "true"
+    enable-oslogin         = "true"
     block-project-ssh-keys = "true"
   }
 }
 
-# 2. IAP 専用ファイアウォールルール
-# Google IAP セグメントから ops-admin タグのついたマシンへの 22 ポートアクセスのみを許可
+# 3. IAP 専用ファイアウォールルール
 resource "google_compute_firewall" "allow_iap_ssh_ops" {
-  name    = "fw-allow-iap-ssh-ops-${var.env_name}"
+  name    = "${var.resource_prefix}-fw-iap-ssh"
   network = var.vpc_id
   project = var.project_id
 
@@ -50,6 +58,7 @@ resource "google_compute_firewall" "allow_iap_ssh_ops" {
     ports    = ["22"]
   }
 
-  source_ranges = ["35.235.240.0/20"]
+  # Google IAP 的固定 IP 段 [cite: 5]
+  source_ranges = ["35.235.240.0/20"] 
   target_tags   = ["ops-admin"]
 }

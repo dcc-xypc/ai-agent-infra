@@ -2,7 +2,7 @@
 # 1. 前端 Web 应用: web-frontend-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "web_frontend_app" {
-  name     = "${var.resource_prefix}-cr-web-front"
+  name     = "${var.resource_prefix}-cr-web-frontend"
   location = var.region
   project  = var.project_id
   labels   = var.common_labels
@@ -45,7 +45,7 @@ resource "google_cloud_run_v2_service_iam_member" "web_frontend_invoker" {
 # 2. Web 后端应用: web-backend-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "web_backend_app" {
-  name     = "${var.resource_prefix}-cr-web-back"
+  name     = "${var.resource_prefix}-cr-web-backend"
   location = var.region
   project  = var.project_id
   labels   = var.common_labels
