@@ -33,6 +33,7 @@ resource "google_sql_database_instance" "postgres_instance" {
   database_version = "POSTGRES_17"
 
   settings {
+    edition = "ENTERPRISE"
     tier      = var.db_tier_config[var.env_name]
     disk_type = "PD_SSD"
     disk_size = 10
