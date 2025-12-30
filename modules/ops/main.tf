@@ -37,7 +37,7 @@ resource "google_compute_instance" "ops_vm" {
   allow_stopping_for_update = true
   
   service_account {
-    email  = data.google_compute_default_service_account.default.email [cite: 4]
+    email  = data.google_compute_default_service_account.default.email
     scopes = ["cloud-platform"]
   }
 
@@ -58,7 +58,7 @@ resource "google_compute_firewall" "allow_iap_ssh_ops" {
     ports    = ["22"]
   }
 
-  # Google IAP 的固定 IP 段 [cite: 5]
+  # Google IAP 的固定 IP 段
   source_ranges = ["35.235.240.0/20"] 
   target_tags   = ["ops-admin"]
 }
