@@ -145,11 +145,11 @@ module "loadbalancer" {
   vpc_id                   = module.vpc.vpc_id
   ilb_subnet_id            = module.vpc.ilb_subnet_id
   internal_lb_ip_address   = module.vpc.internal_lb_ip_address
+  allowed_source_ip_ranges = var.allowed_source_ip_ranges 
   web_frontend_app_name    = module.cloudrun.web_frontend_app_name
   web_backend_app_name     = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name    = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name   = module.cloudrun.auth_keycloak_app_name 
-  allowed_source_ip_ranges   = module.cloudrun.allowed_source_ip_ranges 
   resource_prefix          = local.resource_prefix
   common_labels            = local.common_labels
   depends_on = [
