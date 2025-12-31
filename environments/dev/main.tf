@@ -33,9 +33,13 @@ module "vpc" {
   region                   = var.region
   env_name                 = var.env_name
   vpc_network_name         = var.vpc_network_name
-  subnet_cidr_app          = var.subnet_cidr_app
+  subnet_cidr_con          = var.subnet_cidr_con
+  subnet_cidr_sql          = var.subnet_cidr_sql
+  subnet_cidr_psc          = var.subnet_cidr_psc
   subnet_cidr_ops          = var.subnet_cidr_ops
-  connector_subnet_cidr    = var.connector_subnet_cidr
+  subnet_cidr_lb_int       = var.subnet_cidr_lb_int
+  subnet_cidr_lb_int_proxy = var.subnet_cidr_lb_int_proxy
+
   enable_ops_nat           = var.enable_ops_nat
   reserved_ip_range_name   = var.reserved_ip_range_name
   resource_prefix          = local.resource_prefix

@@ -10,13 +10,22 @@ variable "env_name" {
 variable "vpc_network_name" {
   type = string
 }
-variable "subnet_cidr_app" {
+variable "subnet_cidr_con" {
+  type = string
+}
+variable "subnet_cidr_sql" {
+  type = string
+}
+variable "subnet_cidr_psc" {
   type = string
 }
 variable "subnet_cidr_ops" {
   type = string
 }
-variable "connector_subnet_cidr" {
+variable "subnet_cidr_lb_int" {
+  type = string
+}
+variable "subnet_cidr_lb_int_proxy" {
   type = string
 }
 variable "enable_ops_nat" {

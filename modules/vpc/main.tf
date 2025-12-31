@@ -18,13 +18,24 @@ resource "google_compute_route" "default_internet_route" {
   project          = var.project_id
 }
 
-# 2. Internal LB 専用サブネット
-resource "google_compute_subnetwork" "ilb_subnet" {
-  name          = "${var.resource_prefix}-sb-ilb"
+# 1. VPC アクセス コネクタ専用サブネット
+resource "google_compute_subnetwork" "connector_subnet" {
+  name          = "${var.resource_prefix}-sb-con"
+  project       = var.project_id
+  ip_cidr_range = var.subnet_cidr_con
+  region        = var.region 
+  network       = google_compute_network.vpc_network.self_link
+  private_ip_google_access = true
+}
+
+# VPC内の Private Service Connect 用サブネット
+resource "google_compute_subnetwork" "psc_subnet" {
+  name          = "${var.resource_prefix}-sb-psc"
   project       = var.project_id
   region        = var.region
-  ip_cidr_range = var.subnet_cidr_app
-  network       = google_compute_network.vpc_network.self_link
+  network       = google_compute_network.vpc_network.id
+  ip_cidr_range = var.subnet_cidr_psc
+  private_ip_google_access = true
 }
 
 # 3. devops vm 専用サブネット
@@ -37,14 +48,13 @@ resource "google_compute_subnetwork" "ops_subnet" {
   private_ip_google_access = true
 }
 
-# 4. VPC アクセス コネクタ専用サブネット
-resource "google_compute_subnetwork" "connector_subnet" {
-  name          = "${var.resource_prefix}-sb-con"
+# 2. Internal LB 専用サブネット
+resource "google_compute_subnetwork" "ilb_subnet" {
+  name          = "${var.resource_prefix}-sb-ilb"
   project       = var.project_id
-  ip_cidr_range = var.connector_subnet_cidr
-  region        = var.region 
+  region        = var.region
+  ip_cidr_range = var.subnet_cidr_lb_int
   network       = google_compute_network.vpc_network.self_link
-  private_ip_google_access = true
 }
 
 # 5. VPC アクセス コネクタ
@@ -59,7 +69,7 @@ resource "google_vpc_access_connector" "main_connector" {
   min_instances = 2
   max_instances = 3
   machine_type = "e2-micro"
-  
+
   depends_on = [google_compute_subnetwork.connector_subnet]
 }
 
@@ -69,7 +79,8 @@ resource "google_compute_global_address" "private_ip_range" {
   project       = var.project_id
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
-  prefix_length = 16 
+  address       = split("/", var.subnet_cidr_sql)[0]
+  prefix_length = split("/", var.subnet_cidr_sql)[1]
   network       = google_compute_network.vpc_network.self_link
   
   labels        = var.common_labels
@@ -88,7 +99,7 @@ resource "google_compute_subnetwork" "proxy_only_subnet" {
   project       = var.project_id
   region        = var.region
   network       = google_compute_network.vpc_network.id
-  ip_cidr_range = "10.129.0.0/26"
+  ip_cidr_range = var.subnet_cidr_lb_int_proxy
   purpose       = "REGIONAL_MANAGED_PROXY"
   role          = "ACTIVE"
 }

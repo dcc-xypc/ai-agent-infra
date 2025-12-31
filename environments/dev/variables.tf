@@ -152,22 +152,40 @@ variable "vpc_network_name" {
   default     = "iac-custom-vpc"
 }
 
-variable "subnet_cidr_app" {
-  description = "アプリケーションサブネットのIP CIDR範囲です。"
+variable "subnet_cidr_con" {
+  description = "VPCアクセスコネクタ専用サブネットのIP CIDR範囲です。"
   type        = string
-  default     = "10.0.1.0/24" 
+  default     = "10.1.0.0/28"
+}
+
+variable "subnet_cidr_sql" {
+  description = "Cloud SQL専用サブネットのIP CIDR範囲です。"
+  type        = string
+  default     = "10.2.0.0/24"
+}
+
+variable "subnet_cidr_psc" {
+  description = "Private Service Connect専用サブネットのIP CIDR範囲です。"
+  type        = string
+  default     = "10.3.0.0/24"
 }
 
 variable "subnet_cidr_ops" {
   description = "devopsサブネットのIP CIDR範囲です。"
   type        = string
-  default     = "10.0.2.0/24" 
+  default     = "10.4.0.0/24" 
 }
 
-variable "connector_subnet_cidr" {
-  description = "VPCアクセスコネクタ専用サブネットのIP CIDR範囲です。"
+variable "subnet_cidr_lb_int" {
+  description = "devopsサブネットのIP CIDR範囲です。"
   type        = string
-  default     = "10.0.3.0/28"
+  default     = "10.5.0.0/24" 
+}
+
+variable "subnet_cidr_lb_int_proxy" {
+  description = "devopsサブネットのIP CIDR範囲です。"
+  type        = string
+  default     = "10.6.0.0/24"
 }
 
 variable "reserved_ip_range_name" {
