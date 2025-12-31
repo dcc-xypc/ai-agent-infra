@@ -110,7 +110,7 @@ variable "oauth2_proxy_client_id" {
 variable "oauth2_proxy_client_secret" {
   description = "OAuth2 Proxyのクライアントシークレットです。"
   type        = string
-  default     = "nnUpyPmKY6HwAxTdZNXnoic3A3bbvpB9"
+  default     = "ZMflKrEpgeITQA5ocitK0AEcEeFrzTsl"
 }
 
 variable "oauth2_proxy_cookie_secret" {
