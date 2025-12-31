@@ -41,7 +41,6 @@ module "vpc" {
   subnet_cidr_lb_int_proxy = var.subnet_cidr_lb_int_proxy
 
   enable_ops_nat           = var.enable_ops_nat
-  reserved_ip_range_name   = var.reserved_ip_range_name
   resource_prefix          = local.resource_prefix
   common_labels            = local.common_labels
   depends_on = [
@@ -150,6 +149,7 @@ module "loadbalancer" {
   web_backend_app_name     = module.cloudrun.web_backend_app_name
   oauth2_proxy_app_name    = module.cloudrun.oauth2_proxy_app_name 
   auth_keycloak_app_name   = module.cloudrun.auth_keycloak_app_name 
+  allowed_source_ip_ranges   = module.cloudrun.allowed_source_ip_ranges 
   resource_prefix          = local.resource_prefix
   common_labels            = local.common_labels
   depends_on = [

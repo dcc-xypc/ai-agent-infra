@@ -40,3 +40,6 @@ variable "resource_prefix" {
 variable "common_labels" {
   type = map(string)
 }
+variable "allowed_source_ip_ranges" {
+  type        = list(string)
+}

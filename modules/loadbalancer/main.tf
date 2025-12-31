@@ -12,6 +12,37 @@ resource "google_compute_global_address" "lb_ip" {
   #}
 }
 
+resource "google_compute_security_policy" "external_access_policy" {
+  name        = "${var.resource_prefix}-policy-ext-limit"
+  project     = var.project_id
+  description = "外部アクセスを特定IPに制限"
+
+  # デフォルトルール: 全て拒否
+  rule {
+    action   = "deny(403)"
+    priority = "2147483647"
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+  }
+
+  # 許可ルール: 変数からIPリストを読み込む
+  rule {
+    action   = "allow"
+    priority = "1000"
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = var.allowed_source_ip_ranges
+      }
+    }
+    description = "Allow from trusted sources defined in variables"
+  }
+}
+
 # 2. Serverless NEG (ネットワークエンドポイントグループ)
 resource "google_compute_region_network_endpoint_group" "frontend_neg" {
   name                  = "${var.resource_prefix}-neg-front"
@@ -59,6 +90,7 @@ resource "google_compute_backend_service" "frontend_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  security_policy = google_compute_security_policy.external_access_policy.id
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {
@@ -73,6 +105,7 @@ resource "google_compute_backend_service" "proxy_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  security_policy = google_compute_security_policy.external_access_policy.id
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {
@@ -85,6 +118,7 @@ resource "google_compute_backend_service" "keycloak_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  security_policy = google_compute_security_policy.external_access_policy.id
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {

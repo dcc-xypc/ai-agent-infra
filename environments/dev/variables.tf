@@ -139,7 +139,6 @@ variable "trigger_branch" {
   default     = "^main$"
 }
 
-# --- ネットワーク変数 --- 
 variable "external_cloudrun_sa_email" {
   description = "Cloud Runサービスが使用するサービスアカウントのメールアドレスです。"
   type        = string
@@ -189,10 +188,10 @@ variable "subnet_cidr_lb_int_proxy" {
   default     = "10.6.0.0/24"
 }
 
-variable "reserved_ip_range_name" {
-  description = "Cloud SQLサービスネットワーク用に予約されたIP範囲の名前です。"
-  type        = string
-  default     = "google-managed-services-ip-range"
+variable "allowed_source_ip_ranges" {
+  description = "外部ロードバランサへのアクセスを許可するIPアドレス範囲のリスト"
+  type        = list(string)
+  default     = ["13.228.59.248/32", "13.230.154.173/32", "52.192.4.186/32", "218.69.11.110/32"]
 }
 
 variable "enable_ops_nat" {

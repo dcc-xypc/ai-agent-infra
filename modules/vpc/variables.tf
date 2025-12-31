@@ -31,9 +31,6 @@ variable "subnet_cidr_lb_int_proxy" {
 variable "enable_ops_nat" {
   type = bool
 }
-variable "reserved_ip_range_name" {
-  type = string
-}
 variable "resource_prefix" {
   type = string
 }
