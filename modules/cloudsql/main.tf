@@ -25,44 +25,6 @@ data "google_secret_manager_secret_version" "keycloak_db_password" {
   project = var.project_id
 }
 
-# 1. Cloud SQL インスタンス (PostgreSQL / プライベート IP のみ)
-resource "google_sql_database_instance" "postgres_instance" {
-  name             = "${var.resource_prefix}-sql-pg"
-  project          = var.project_id
-  region           = var.region
-  database_version = "POSTGRES_17"
-
-  settings {
-    edition = "ENTERPRISE"
-    tier      = var.db_tier_config[var.env_name]
-    disk_type = "PD_SSD"
-    disk_size = 10
-
-    ip_configuration {
-      ipv4_enabled    = false
-      private_network = var.private_network_link
-    }
-    maintenance_window {
-      day  = 7 # Sunday
-      hour = 5
-    }
-
-    user_labels = var.common_labels
-  }
-  deletion_protection = false
-}
-
-resource "google_sql_user" "postgres_admin" {
-  name     = "postgres" 
-  instance = google_sql_database_instance.postgres_instance.name
-  project  = var.project_id
-  password = data.google_secret_manager_secret_version.pg_admin_password.secret_data
-
-  depends_on = [
-    google_sql_database_instance.postgres_instance
-  ]
-}
-
 # 1.1 新增 MySQL 实例 (私有 IP 模式)
 resource "google_sql_database_instance" "mysql_instance" {
   name             = "${var.resource_prefix}-sql-mysql"
@@ -112,19 +74,6 @@ resource "google_sql_database" "ai_agent_db" {
 }
 
 # ----------------------------------------------------
-# 3. 認証データベースを作成 (Keycloak)
-# ----------------------------------------------------
-resource "google_sql_database" "keycloak_db" {
-  name       = var.keycloak_db_name
-  project    = var.project_id
-  instance   = google_sql_database_instance.postgres_instance.name
-  
-  depends_on = [
-    google_sql_database_instance.postgres_instance
-  ]
-}
-
-# ----------------------------------------------------
 # 4. AI Agent データベースユーザーを作成
 # ----------------------------------------------------
 resource "google_sql_user" "ai_agent_user" {
@@ -137,20 +86,5 @@ resource "google_sql_user" "ai_agent_user" {
 
   depends_on = [
     google_sql_database_instance.mysql_instance
-  ]
-}
-
-# ----------------------------------------------------
-# 5. Keycloak データベースユーザーを作成
-# ----------------------------------------------------
-resource "google_sql_user" "keycloak_user" {
-  name     = var.keycloak_db_user
-  instance = google_sql_database_instance.postgres_instance.name
-  project  = var.project_id
-  
-  password = data.google_secret_manager_secret_version.keycloak_db_password.secret_data
-
-  depends_on = [
-    google_sql_database_instance.postgres_instance
   ]
 }
