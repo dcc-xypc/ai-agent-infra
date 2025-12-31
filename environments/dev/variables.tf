@@ -86,7 +86,8 @@ variable "default_placeholder_image" {
 variable "oauth2_proxy_image_gcr" {
   description = "OAuth2 Proxyサービスの目標イメージです。"
   type        = string
-  default     = "gcr.io/cloudrun/hello"
+  #default     = "gcr.io/cloudrun/hello"
+  default     = ""
 }
 
 variable "keycloak_admin_name" {
