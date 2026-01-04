@@ -17,7 +17,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
       image = var.default_placeholder_image
       resources {
         limits = {
-          cpu    = "500m"
+          cpu    = "1"
           memory = "512Mi"
         }
       }
