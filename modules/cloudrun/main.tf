@@ -20,6 +20,7 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
           cpu    = "500m"
           memory = "512Mi"
         }
+      }
     }
     
     vpc_access {
