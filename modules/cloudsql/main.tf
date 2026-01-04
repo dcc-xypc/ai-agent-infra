@@ -75,7 +75,6 @@ resource "google_sql_database_instance" "mysql_instance" {
     availability_type = var.env_name == "prod" ? "REGIONAL" : "ZONAL"
     tier      = var.db_tier_config[var.env_name]
     disk_type = "PD_SSD"
-    disk_size = 10
     disk_size = var.env_name == "prod" ? 100 : 10
 
     ip_configuration {
