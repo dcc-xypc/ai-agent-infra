@@ -15,6 +15,11 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
     
     containers {
       image = var.default_placeholder_image
+      resources {
+        limits = {
+          cpu    = "500m"
+          memory = "512Mi"
+        }
     }
     
     vpc_access {
@@ -57,7 +62,12 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
 
     containers {
       image = var.default_placeholder_image
-      
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "1Gi"
+        }
+      }
       env {
         name  = "AI_AGENT_DB_CONN_NAME"
         value = var.ai_agent_db_connection_name 
@@ -140,6 +150,12 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
     
     containers {
       image = "gcr.io/q14020-d-toyota-imap-dev/auth-keycloak-app:d0a0e2e"
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "2Gi"
+        }
+      }
       volume_mounts {
         name        = "cloudsql"
         mount_path = "/cloudsql"
@@ -241,12 +257,6 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
         name  = "KC_DB_DRIVER"
         value = "org.postgresql.Driver"
       }
-      resources {
-        limits = {
-          cpu    = "1"
-          memory = "2Gi"
-        }
-      }
     }
     volumes {
       name = "cloudsql"
@@ -306,7 +316,12 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     containers {
       image = local.target_proxy_image
       #image = var.default_placeholder_image
-      
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "1Gi"
+        }
+      }
       env {
         name  = "OAUTH2_PROXY_HTTP_ADDRESS"
         value = "0.0.0.0:8080" 
