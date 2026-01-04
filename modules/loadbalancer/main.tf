@@ -118,7 +118,7 @@ resource "google_compute_backend_service" "keycloak_backend" {
   project               = var.project_id
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  security_policy = google_compute_security_policy.external_access_policy.id
+  #security_policy = google_compute_security_policy.external_access_policy.id
   session_affinity      = "GENERATED_COOKIE"
   affinity_cookie_ttl_sec = 300
   backend {
