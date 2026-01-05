@@ -96,7 +96,10 @@ resource "google_compute_backend_service" "frontend_backend" {
   backend {
     group = google_compute_region_network_endpoint_group.frontend_neg.id
   }
-  # 后端服务支持 labels
+  log_config {
+    enable      = true
+    sample_rate = 1.0  # 1.0 代表收集 100% 的请求日志
+  }
   # labels                = var.common_labels 
 }
 
@@ -111,6 +114,10 @@ resource "google_compute_backend_service" "proxy_backend" {
   backend {
     group = google_compute_region_network_endpoint_group.proxy_neg.id
   }
+  log_config {
+    enable      = true
+    sample_rate = 1.0  # 1.0 代表收集 100% 的请求日志
+  }
 }
 
 resource "google_compute_backend_service" "keycloak_backend" {
@@ -123,6 +130,10 @@ resource "google_compute_backend_service" "keycloak_backend" {
   affinity_cookie_ttl_sec = 300
   backend {
     group = google_compute_region_network_endpoint_group.keycloak_neg.id
+  }
+  log_config {
+    enable      = true
+    sample_rate = 1.0  # 1.0 代表收集 100% 的请求日志
   }
 }
 
@@ -234,6 +245,10 @@ resource "google_compute_region_backend_service" "internal_backend" {
     group = google_compute_region_network_endpoint_group.backend_neg.id
     balancing_mode = "UTILIZATION"
     capacity_scaler = 1.0
+  }
+  log_config {
+    enable      = true
+    sample_rate = 1.0  # 1.0 代表收集 100% 的请求日志
   }
 }
 
