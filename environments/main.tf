@@ -18,7 +18,7 @@ locals {
 
 # 0. 调用 API 模块
 module "project_apis" {
-  source                   = "../../modules/api"
+  source                   = "../modules/api"
 
   project_id               = var.project_id
 }
@@ -27,7 +27,7 @@ module "project_apis" {
 # 1. VPC モジュール
 # ---------------------------------------------
 module "vpc" {
-  source                   = "../../modules/vpc"
+  source                   = "../modules/vpc"
 
   project_id               = var.project_id
   region                   = var.region
@@ -52,7 +52,7 @@ module "vpc" {
 # 2. Cloud SQL モジュール
 # ---------------------------------------------
 module "cloudsql" {
-  source                   = "../../modules/cloudsql"
+  source                   = "../modules/cloudsql"
 
   project_id               = var.project_id
   project_number           = var.project_number
@@ -79,7 +79,7 @@ module "cloudsql" {
 # 2. Compute Engine モジュール(ops)
 # ---------------------------------------------
 module "ops" {
-  source                   = "../../modules/ops"
+  source                   = "../modules/ops"
   project_id               = var.project_id
   region                   = var.region
   env_name                 = var.env_name
@@ -97,7 +97,7 @@ module "ops" {
 # 3. Cloud Run モジュール
 # ---------------------------------------------
 module "cloudrun" {
-  source                   = "../../modules/cloudrun"
+  source                   = "../modules/cloudrun"
 
   project_id               = var.project_id
   project_number           = var.project_number
@@ -135,7 +135,7 @@ module "cloudrun" {
 # 4. Load Balancer モジュール
 # ---------------------------------------------
 module "loadbalancer" {
-  source                   = "../../modules/loadbalancer"
+  source                   = "../modules/loadbalancer"
 
   project_id               = var.project_id
   env_name                 = var.env_name
@@ -163,7 +163,7 @@ module "loadbalancer" {
 # 5. Cloud Build Trigger モジュール
 # ---------------------------------------------
 # module "ci_cd_trigger" {
-#   source                   = "../../modules/cloudbuild_trigger"
+#   source                   = "../modules/cloudbuild_trigger"
 #   
 #   project_id               = var.project_id
 #   env_name                 = var.env_name

@@ -35,7 +35,7 @@ resource "google_sql_database_instance" "postgres_instance" {
   settings {
     availability_type = var.env_name == "prod" ? "REGIONAL" : "ZONAL"
     edition = "ENTERPRISE"
-    tier      = var.db_tier_config[var.env_name]
+    tier      = var.db_tier_config
     disk_type = "PD_SSD"
     disk_size = var.env_name == "prod" ? 100 : 10
 
@@ -73,7 +73,7 @@ resource "google_sql_database_instance" "mysql_instance" {
 
   settings {
     availability_type = var.env_name == "prod" ? "REGIONAL" : "ZONAL"
-    tier      = var.db_tier_config[var.env_name]
+    tier      = var.db_tier_config
     disk_type = "PD_SSD"
     disk_size = var.env_name == "prod" ? 100 : 10
 

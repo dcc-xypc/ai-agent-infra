@@ -11,7 +11,7 @@ variable "env_name" {
   type = string
 }
 variable "db_tier_config" {
-  type = map(string)
+  type = string
 }
 variable "pg_admin_password" {
   type = string

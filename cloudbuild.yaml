@@ -17,10 +17,10 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Init'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'init'
     - '-backend-config=bucket=${_TF_STATE_BUCKET}'
-    - '-backend-config=prefix=${_ENV_NAME}'
+    - '-backend-config=prefix=terraform/state'
     - '-upgrade' 
   volumes:
     - name: 'tf-data'
@@ -30,7 +30,7 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Validate'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'validate'
   volumes:
     - name: 'tf-data'
@@ -40,13 +40,11 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Plan'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'plan'
+    - '-var-file=${_ENV_NAME}/${_ENV_NAME}.tfvars'
     - '-out=/workspace/tfplan'
     - '-input=false'
-  env:
-    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
-    - 'TF_VAR_env_name=${_ENV_NAME}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
@@ -59,8 +57,6 @@ steps:
     - 'apply'
     - '-auto-approve'
     - '/workspace/tfplan'
-  env:
-    - 'TF_VAR_enable_ops_nat=${_ENABLE_OPS_NAT}'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
