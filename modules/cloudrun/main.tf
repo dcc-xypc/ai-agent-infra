@@ -85,7 +85,7 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
         name  = "AI_AGENT_DB_PASS"
         value_source {
           secret_key_ref {
-            secret  = "ai_agent_db_password"
+            secret  = var.ai_agent_db_password
             version = "latest"
           }
         }
@@ -186,7 +186,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
         name  = "KC_DB_PASSWORD" 
         value_source {
           secret_key_ref {
-            secret  = "keycloak_db_password"
+            secret  = var.keycloak_db_password
             version = "latest"
           }
         }
@@ -199,7 +199,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
         name  = "KC_BOOTSTRAP_ADMIN_PASSWORD" 
         value_source {
           secret_key_ref {
-            secret  = "keycloak_admin_password"
+            secret  = var.keycloak_admin_password
             version = "latest"
           }
         }
@@ -345,7 +345,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_WHITELIST_DOMAINS"
-        value = ".ai-agent.tcic-cloud.com" # 允许以该后缀结尾的所有域名跳转
+        value = ".${var.auth_domain}"
       }
       env {
         name  = "OAUTH2_PROXY_SKIP_AUTH_STRIP_HEADERS"
