@@ -87,11 +87,11 @@ resource "google_compute_global_address" "private_ip_range" {
 }
 
 # 7. サービスネットワーク接続 (VPC ピアリング)
-# resource "google_service_networking_connection" "vpc_peering_connection" {
-#   network                 = google_compute_network.vpc_network.self_link
-#   service                 = "servicenetworking.googleapis.com"
-#   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
-# }
+resource "google_service_networking_connection" "vpc_peering_connection" {
+  network                 = google_compute_network.vpc_network.self_link
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
+}
 
 # 8. Proxy-Only サブネット (Internal ALB 用)
 resource "google_compute_subnetwork" "proxy_only_subnet" {
