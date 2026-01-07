@@ -7,23 +7,23 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Init'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'init'
     - '-backend-config=bucket=${_TF_STATE_BUCKET}'
-    - '-backend-config=prefix=${_ENV_NAME}'
+    - '-backend-config=prefix=terraform/state'
     - '-upgrade'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
 
 # 2. Terraform 計画 (Destroy Plan)
-# 目的：生成销毁计划 (可选，但推荐用于安全检查)
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Destroy Plan'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'plan'
     - '-destroy'
+    - '-var-file=${_ENV_NAME}/${_ENV_NAME}.tfvars'
     - '-out=/workspace/tfdestroyplan'
     - '-input=false'
   volumes:
@@ -35,10 +35,10 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Destroy Apply'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'apply'
     - '-auto-approve'
-    - '/workspace/tfdestroyplan' # 应用销毁计划
+    - '/workspace/tfdestroyplan'
   volumes:
     - name: 'tf-data'
       path: '/root/.terraform'
