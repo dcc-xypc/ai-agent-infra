@@ -17,8 +17,8 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
       image = var.default_placeholder_image
       resources {
         limits = {
-          cpu    = "1"
-          memory = "512Mi"
+          cpu    = var.cloud_run_specs["web-frontend"].cpu
+          memory = var.cloud_run_specs["web-frontend"].memory
         }
       }
     }
@@ -65,8 +65,8 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       image = var.default_placeholder_image
       resources {
         limits = {
-          cpu    = "1"
-          memory = "1Gi"
+          cpu    = var.cloud_run_specs["web-backend"].cpu
+          memory = var.cloud_run_specs["web-backend"].memory
         }
       }
       env {
@@ -153,8 +153,8 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       image = "gcr.io/q14020-d-toyota-imap-dev/auth-keycloak-app:d0a0e2e"
       resources {
         limits = {
-          cpu    = "1"
-          memory = "2Gi"
+          cpu    = var.cloud_run_specs["auth-kc"].cpu
+          memory = var.cloud_run_specs["auth-kc"].memory
         }
       }
       volume_mounts {
@@ -319,8 +319,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       #image = var.default_placeholder_image
       resources {
         limits = {
-          cpu    = "1"
-          memory = "1Gi"
+          cpu    = var.cloud_run_specs["proxy"].cpu
+          memory = var.cloud_run_specs["proxy"].memory
         }
       }
       env {

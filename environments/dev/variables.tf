@@ -211,3 +211,18 @@ variable "auth_domain" {
   type        = string
   default     = "auth.ai-agent.tcic-cloud.com"
 }
+
+variable "cloud_run_specs" {
+  description = "CloudRunコンテナのリソースLimits"
+  type = map(object({
+    cpu    = string
+    memory = string
+  }))
+  default = {
+    "web-frontend" = { cpu = "1", memory = "512Mi" }
+    "web-backend"  = { cpu = "1", memory = "1Gi" }
+    "auth-kc"      = { cpu = "1", memory = "2Gi" }
+    "proxy"        = { cpu = "1", memory = "1Gi" }
+  }
+}
+

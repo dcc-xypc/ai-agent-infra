@@ -81,3 +81,9 @@ variable "resource_prefix" {
 variable "common_labels" {
   type = map(string)
 }
+variable "cloud_run_specs" {
+  type = map(object({
+    cpu    = string
+    memory = string
+  }))
+}
