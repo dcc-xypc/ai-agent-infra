@@ -150,7 +150,7 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
     }
     
     containers {
-      image = "gcr.io/q14020-d-toyota-imap-dev/auth-keycloak-app:d0a0e2e"
+      image = var.default_placeholder_image
       resources {
         limits = {
           cpu    = var.cloud_run_specs["auth-kc"].cpu
@@ -315,8 +315,8 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     session_affinity = true
     
     containers {
-      image = local.target_proxy_image
-      #image = var.default_placeholder_image
+      #image = local.target_proxy_image
+      image = var.default_placeholder_image
       resources {
         limits = {
           cpu    = var.cloud_run_specs["proxy"].cpu
