@@ -32,12 +32,12 @@ trigger_branch    = "^main$"
 
 # 5. ネットワーク
 vpc_network_name         = "iac-custom-vpc"
+subnet_cidr_psc          = "10.0.0.0/24"
 subnet_cidr_con          = "10.0.1.0/28"
-subnet_cidr_sql          = "10.0.2.0/24"
-subnet_cidr_psc          = "10.0.3.0/24"
-subnet_cidr_ops          = "10.0.4.0/24"
-subnet_cidr_lb_int       = "10.0.5.0/24"
-subnet_cidr_lb_int_proxy = "10.0.6.0/24"
+subnet_cidr_ops          = "10.0.2.0/24"
+subnet_cidr_lb_int       = "10.0.3.0/24"
+subnet_cidr_lb_int_proxy = "10.0.4.0/24"
+subnet_cidr_sql          = "10.1.0.0/20"
 allowed_source_ip_ranges = ["13.228.59.248/32", "13.230.154.173/32", "13.231.149.250/32", "218.69.11.110/32"]
 enable_ops_nat           = false
 tenant_domain            = "tenant1.ai-agent.tcic-cloud.com"
