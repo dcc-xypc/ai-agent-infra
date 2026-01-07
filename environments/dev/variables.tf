@@ -173,13 +173,13 @@ variable "subnet_cidr_psc" {
 variable "subnet_cidr_ops" {
   description = "devopsサブネットのIP CIDR範囲です。"
   type        = string
-  default     = "10.4.0.0/24" 
+  default     = "10.4.0.0/24"
 }
 
 variable "subnet_cidr_lb_int" {
   description = "devopsサブネットのIP CIDR範囲です。"
   type        = string
-  default     = "10.5.0.0/24" 
+  default     = "10.5.0.0/24"
 }
 
 variable "subnet_cidr_lb_int_proxy" {
@@ -191,7 +191,7 @@ variable "subnet_cidr_lb_int_proxy" {
 variable "allowed_source_ip_ranges" {
   description = "外部ロードバランサへのアクセスを許可するIPアドレス範囲のリスト"
   type        = list(string)
-  default     = ["13.228.59.248/32", "13.230.154.173/32", "52.192.4.186/32", "218.69.11.110/32"]
+  default     = ["13.228.59.248/32", "13.230.154.173/32", "13.231.149.250/32", "218.69.11.110/32"]
 }
 
 variable "enable_ops_nat" {
