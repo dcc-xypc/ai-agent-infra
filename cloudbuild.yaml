@@ -53,7 +53,7 @@ steps:
 - name: 'hashicorp/terraform:latest'
   id: 'Terraform Apply'
   args:
-    - '-chdir=environments/${_ENV_NAME}'
+    - '-chdir=environments'
     - 'apply'
     - '-auto-approve'
     - '/workspace/tfplan'
