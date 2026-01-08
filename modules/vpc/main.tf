@@ -149,7 +149,8 @@ resource "google_compute_router_nat" "nat" {
   router                             = google_compute_router.router[0].name
   region                             = var.region
   project                            = var.project_id
-  nat_ip_allocate_option             = "AUTO_ONLY"
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  nat_ips                            = [google_compute_address.nat_static_ip.self_link]
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 
   subnetwork {

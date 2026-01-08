@@ -22,6 +22,12 @@ variable "auth_keycloak_app_name" {
 variable "vpc_id" {
   type = string
 }
+variable "lb_ip_address" {
+  type = string
+}
+variable "nat_ip_address" {
+  type = string
+}
 variable "ilb_subnet_id" {
   type = string
 }
