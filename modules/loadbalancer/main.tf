@@ -26,7 +26,7 @@ resource "google_compute_security_policy" "external_access_policy" {
     match {
       versioned_expr = "SRC_IPS_V1"
       config {
-        src_ip_ranges = concat(var.allowed_source_ip_ranges, ["${var.vpc_nat_ip}/32"])
+        src_ip_ranges = concat(var.allowed_source_ip_ranges, ["${var.nat_ip_address}/32"])
       }
     }
     description = "Allow from trusted sources defined in variables"
