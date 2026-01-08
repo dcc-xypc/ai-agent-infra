@@ -144,6 +144,8 @@ module "loadbalancer" {
   tenant_domain            = var.tenant_domain
   
   vpc_id                   = module.vpc.vpc_id
+  lb_ip_address            = module.vpc.lb_ip_address
+  nat_ip_address           = module.vpc.nat_ip_address
   ilb_subnet_id            = module.vpc.ilb_subnet_id
   internal_lb_ip_address   = module.vpc.internal_lb_ip_address
   allowed_source_ip_ranges = var.allowed_source_ip_ranges 

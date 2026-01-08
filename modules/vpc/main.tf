@@ -9,6 +9,23 @@ resource "google_compute_network" "vpc_network" {
   auto_create_subnetworks = false
 }
 
+# 1. グローバル静的外部 IP アドレスを予約
+resource "google_compute_global_address" "lb_static_ip" {
+  name    = "${var.resource_prefix}-pip-lb-ext"
+  project = var.project_id
+  
+  #lifecycle {
+  #  prevent_destroy = true
+  #}
+}
+
+resource "google_compute_address" "nat_static_ip" {
+  name    = "${var.resource_prefix}-pip-nat"
+  project = var.project_id
+  region  = var.region
+  address_type = "EXTERNAL"
+}
+
 resource "google_compute_route" "default_internet_route" {
   name             = "${var.resource_prefix}-route-igw"
   dest_range       = "0.0.0.0/0"

@@ -8,6 +8,14 @@ output "network_self_link" {
   description = "作成されたVPCネットワークのセルフリンク"
 }
 
+output "lb_ip_address" {
+  value = google_compute_global_address.lb_static_ip.address
+}
+
+output "nat_ip_address" {
+  value = google_compute_address.nat_static_ip.address
+}
+
 output "connector_id" {
   value       = google_vpc_access_connector.main_connector.id
   description = "VPCアクセスコネクタのID"

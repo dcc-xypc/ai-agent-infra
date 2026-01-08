@@ -2,16 +2,6 @@
 # Load Balancer モジュール: デュアルドメイン、HTTPS 及び自動リダイレクトをサポート
 # -----------------------------------------------------------
 
-# 1. グローバル静的外部 IP アドレスを予約
-resource "google_compute_global_address" "lb_ip" {
-  name    = "${var.resource_prefix}-pip-lb-ext"
-  project = var.project_id
-  
-  #lifecycle {
-  #  prevent_destroy = true
-  #}
-}
-
 resource "google_compute_security_policy" "external_access_policy" {
   name        = "${var.resource_prefix}-policy-ext-limit"
   project     = var.project_id
@@ -36,7 +26,7 @@ resource "google_compute_security_policy" "external_access_policy" {
     match {
       versioned_expr = "SRC_IPS_V1"
       config {
-        src_ip_ranges = var.allowed_source_ip_ranges
+        src_ip_ranges = concat(var.allowed_source_ip_ranges, ["${var.vpc_nat_ip}/32"])
       }
     }
     description = "Allow from trusted sources defined in variables"
@@ -215,7 +205,7 @@ resource "google_compute_global_forwarding_rule" "https_rule" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "443"
   target                = google_compute_target_https_proxy.https_proxy.id
-  ip_address            = google_compute_global_address.lb_ip.address
+  ip_address            = var.lb_ip_address
   labels                = var.common_labels
 }
 
@@ -226,7 +216,7 @@ resource "google_compute_global_forwarding_rule" "http_rule" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "80"
   target                = google_compute_target_http_proxy.http_redirect_proxy.id
-  ip_address            = google_compute_global_address.lb_ip.address
+  ip_address            = var.lb_ip_address
   labels                = var.common_labels
 }
 
