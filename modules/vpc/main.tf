@@ -74,22 +74,6 @@ resource "google_compute_subnetwork" "ilb_subnet" {
   network       = google_compute_network.vpc_network.self_link
 }
 
-# 5. VPC アクセス コネクタ
-resource "google_vpc_access_connector" "main_connector" {
-  name          = "${var.resource_prefix}-con"
-  project       = var.project_id
-  region        = var.region 
-  
-  subnet {
-    name = google_compute_subnetwork.connector_subnet.name
-  }
-  min_instances = 2
-  max_instances = 3
-  machine_type = "e2-micro"
-
-  depends_on = [google_compute_subnetwork.connector_subnet]
-}
-
 # 6. IP範囲を予約 (Cloud SQLピアリング用)
 resource "google_compute_global_address" "private_ip_range" {
   name          = "${var.resource_prefix}-pip-sql-reserved"

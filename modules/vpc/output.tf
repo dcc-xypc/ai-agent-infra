@@ -16,11 +16,6 @@ output "nat_ip_address" {
   value = google_compute_address.nat_static_ip.address
 }
 
-output "connector_id" {
-  value       = google_vpc_access_connector.main_connector.id
-  description = "VPCアクセスコネクタのID"
-}
-
 output "ilb_subnet_id" {
   value       = google_compute_subnetwork.ilb_subnet.id
   description = "アプリケーションサブネットのID"
