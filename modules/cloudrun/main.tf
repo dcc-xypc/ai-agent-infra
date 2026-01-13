@@ -24,7 +24,10 @@ resource "google_cloud_run_v2_service" "web_frontend_app" {
     }
     
     vpc_access {
-      connector = var.connector_id
+      network_interfaces {
+        network    = var.vpc_id
+        subnetwork = var.connector_subnet_id
+      }
       egress    = "PRIVATE_RANGES_ONLY"
     }
   }
@@ -107,7 +110,10 @@ resource "google_cloud_run_v2_service" "web_backend_app" {
       }
     }
     vpc_access {
-      connector = var.connector_id
+      network_interfaces {
+        network    = var.vpc_id
+        subnetwork = var.connector_subnet_id
+      }
       egress    = "ALL_TRAFFIC"
     }
   }
@@ -266,7 +272,10 @@ resource "google_cloud_run_v2_service" "auth_keycloak_app" {
       }
     } 
     vpc_access {
-      connector = var.connector_id
+      network_interfaces {
+        network    = var.vpc_id
+        subnetwork = var.connector_subnet_id
+      }
       egress    = "PRIVATE_RANGES_ONLY"
     }
   }
@@ -445,8 +454,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
     }
     
     vpc_access {
-      connector = var.connector_id
-      egress    = "PRIVATE_RANGES_ONLY"
+      network_interfaces {
+        network    = var.vpc_id
+        subnetwork = var.connector_subnet_id
+      }
     }
   }
 

@@ -10,6 +10,9 @@ variable "region" {
 variable "env_name" {
   type = string
 }
+variable "vpc_id" {
+  type = string
+}
 variable "connector_id" {
   type = string
 }
