@@ -9,7 +9,7 @@ terraform {
 
 locals {
   resource_prefix = "asahi-${var.env_name}"
-  external_cloudrun_sa_email = "asahi-${var.env_name}-sa-cloud-run@{var.project_id}.iam.gserviceaccount.com"
+  external_cloudrun_sa_email = "asahi-${var.env_name}-sa-cloud-run@${var.project_id}.iam.gserviceaccount.com"
   common_labels = {
     project     = "asahi"
     environment = var.env_name
