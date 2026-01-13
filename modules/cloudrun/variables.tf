@@ -16,6 +16,9 @@ variable "vpc_id" {
 variable "connector_id" {
   type = string
 }
+variable "connector_subnet_id" {
+  type = string
+}
 variable "internal_lb_ip_address" {
   type = string
 }
