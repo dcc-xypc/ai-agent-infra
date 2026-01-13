@@ -10,6 +10,7 @@ terraform {
 locals {
   resource_prefix = "asahi-${var.env_name}"
   external_cloudrun_sa_email = "asahi-${var.env_name}-sa-cloud-run@${var.project_id}.iam.gserviceaccount.com"
+  external_gce_sa_email = "asahi-${var.env_name}-sa-gce@${var.project_id}.iam.gserviceaccount.com"
   common_labels = {
     project     = "asahi"
     environment = var.env_name
@@ -87,6 +88,7 @@ module "ops" {
   vpc_id                   = module.vpc.vpc_id
   nat_id                   = module.vpc.nat_status
   ops_subnet_id            = module.vpc.ops_subnet_id
+  external_gce_sa_email    = local.external_gce_sa_email
   resource_prefix          = local.resource_prefix
   common_labels            = local.common_labels
   depends_on = [

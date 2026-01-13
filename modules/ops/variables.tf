@@ -16,6 +16,9 @@ variable "ops_subnet_id" {
 variable "nat_id" {
   type = string
 }
+variable "external_gce_sa_email" {
+  type = string
+}
 variable "resource_prefix" {
   type = string
 }

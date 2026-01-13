@@ -2,11 +2,6 @@
 # Ops モジュール: 運用保守専用 VM と IAP ファイアウォール
 # -----------------------------------------------------------
 
-# 1. 現在のプロジェクトのデフォルト Compute Engine サービスアカウントを取得
-data "google_compute_default_service_account" "default" {
-  project = var.project_id
-}
-
 # 2. 運用保守専用 VM (Ops VM)
 resource "google_compute_instance" "ops_vm" {
   name         = "${var.resource_prefix}-vm-ops"
@@ -37,7 +32,7 @@ resource "google_compute_instance" "ops_vm" {
   allow_stopping_for_update = true
   
   service_account {
-    email  = data.google_compute_default_service_account.default.email
+    email  = var.external_gce_sa_email
     scopes = ["cloud-platform"]
   }
 
