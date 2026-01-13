@@ -67,6 +67,9 @@ variable "auth_domain" {
 variable "tenant_domain" {
   type = string
 }
+variable "oauth2_proxy_realm_name" {
+  type = string
+}
 variable "oauth2_proxy_client_id" {
   type = string
 }

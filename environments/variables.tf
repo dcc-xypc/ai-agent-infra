@@ -105,6 +105,11 @@ variable "oauth2_proxy_client_id" {
   type        = string
 }
 
+variable "oauth2_proxy_realm_name" {
+  description = "OAuth2 Proxyのレルム名称です。"
+  type        = string
+}
+
 variable "oauth2_proxy_client_secret" {
   description = "OAuth2 Proxyのクライアントシークレットです。"
   type        = string
