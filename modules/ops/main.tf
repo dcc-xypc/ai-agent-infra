@@ -11,7 +11,7 @@ data "google_compute_default_service_account" "default" {
 resource "google_compute_instance" "ops_vm" {
   name         = "${var.resource_prefix}-vm-ops"
   machine_type = "e2-micro"
-  zone         = "${var.region}-b"
+  zone         = "${var.region}-c"
   project      = var.project_id
 
   tags = ["ops-admin"]
