@@ -24,7 +24,6 @@ oauth2_proxy_realm_name    = "ai-agent"
 oauth2_proxy_client_id     = "ai-agent-client"
 oauth2_proxy_client_secret = "2pky4BCjUqyZSJisDdDJhY5QyAhyPJKC"
 oauth2_proxy_cookie_secret = "5IW9m4YHDWHf8AkuCzU_3b1c1Q9NoLlCJW0lKxgvgXE="
-external_cloudrun_sa_email = "sa-cloud-run-keycloak@q14020-d-toyota-imap-dev.iam.gserviceaccount.com"
 
 # 4. GitHub / CI/CD
 github_repo_owner = "dcc-xypc"

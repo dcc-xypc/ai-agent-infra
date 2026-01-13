@@ -122,11 +122,6 @@ variable "oauth2_proxy_cookie_secret" {
   sensitive   = true
 }
 
-variable "external_cloudrun_sa_email" {
-  description = "Cloud Runサービスが使用するサービスアカウントのメールアドレスです。"
-  type        = string
-}
-
 # =================================================================
 # 4. GitHub トリガー / CI/CD
 # =================================================================

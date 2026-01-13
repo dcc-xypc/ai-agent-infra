@@ -9,6 +9,7 @@ terraform {
 
 locals {
   resource_prefix = "asahi-${var.env_name}"
+  external_cloudrun_sa_email = "asahi-${var.env_name}-sa-cloud-run@{var.project_id}.iam.gserviceaccount.com"
   common_labels = {
     project     = "asahi"
     environment = var.env_name
@@ -104,7 +105,7 @@ module "cloudrun" {
   region                   = var.region
   env_name                 = var.env_name
   vpc_id                   = module.vpc.vpc_id
-  external_cloudrun_sa_email = var.external_cloudrun_sa_email
+  external_cloudrun_sa_email = local.external_cloudrun_sa_email
   default_placeholder_image = var.default_placeholder_image
   connector_subnet_id      = module.vpc.connector_subnet_id
   cloud_run_specs = var.cloud_run_specs
