@@ -33,7 +33,7 @@ trigger_branch    = "^main$"
 # 5. ネットワーク
 vpc_network_name         = "iac-custom-vpc"
 subnet_cidr_psc          = "10.0.0.0/24"
-subnet_cidr_con          = "10.0.1.0/28"
+subnet_cidr_con          = "10.0.1.0/24"
 subnet_cidr_ops          = "10.0.99.0/24"
 subnet_cidr_lb_int       = "10.0.3.0/24"
 subnet_cidr_lb_int_proxy = "10.0.4.0/24"
