@@ -13,9 +13,6 @@ variable "env_name" {
 variable "vpc_id" {
   type = string
 }
-variable "connector_id" {
-  type = string
-}
 variable "connector_subnet_id" {
   type = string
 }
