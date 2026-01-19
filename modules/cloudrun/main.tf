@@ -140,7 +140,7 @@ resource "google_cloud_run_v2_service_iam_member" "web_backend_invoker" {
 # 3. Keycloak 认证服务: auth-keycloak-app
 # -----------------------------------------------------------------
 resource "google_cloud_run_v2_service" "auth_keycloak_app" {
-  name     = "${var.resource_prefix}-cr-auth-service"
+  name     = "${var.resource_prefix}-cr-auth-kc"
   location = var.region
   project  = var.project_id
   labels   = var.common_labels
@@ -308,7 +308,7 @@ locals {
 }
 
 resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
-  name     = "${var.resource_prefix}-cr-auth-proxy"
+  name     = "${var.resource_prefix}-cr-proxy"
   location = var.region
   project  = var.project_id
   labels   = var.common_labels
