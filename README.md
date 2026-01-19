@@ -98,7 +98,41 @@ Cloud Build が GitHub からソースコードを取得できるように、以
 
 ---
 
-## 5. トラブルシューティング
+## 5. 運用操作手順 (Cloud Shell & DB 接続)
+
+### ※ 実行ユーザー（個人アカウント）に必要な権限
+Cloud Shell から SSH ログインを実行するユーザーには、以下のロールが必要です：
+* `roles/compute.osLoginExternalUser` (外部組織アカウントの場合)
+* `roles/compute.osAdminLogin` (sudoを使えてログインの場合)
+* `roles/iap.tunnelResourceAccessor` (IAP 経由の接続に必須)
+
+### A. Cloud Shell の起動
+1.  Google Cloud コンソール画面右上の **[Cloud Shell をアクティブにする]** アイコン（`>_`）をクリックします。
+
+### B. 運用用 GCE インスタンスへの SSH ログイン
+以下のコマンドを実行し、IAP トンネル経由で運用用 GCE インスタンス（Devop機）に接続します。
+```bash
+gcloud compute ssh asahi-${var.env_name}-sa-gce \
+    --project=${var.project_id} \
+    --zone=asia-northeast1-c \
+    --tunnel-through-iap
+```
+
+### C. データベースへの接続 (GCE ログイン後に実行)
+GCE インスタンス内から、プライベート IP を使用して各データベースに接続します。
+
+* **PostgreSQL (Keycloak用) への接続**:
+    ```bash
+    psql -h <DB_PRIVATE_IP_ADDRESS> -U postgres
+    ```
+* **MySQL (アプリ用) への接続**:
+    ```bash
+    mysql -h <DB_PRIVATE_IP_ADDRESS> -u root -p
+    ```
+    *※ `<DB_PRIVATE_IP_ADDRESS>` は Google Cloud コンソールの Cloud SQL インスタンス詳細画面で確認してください。*
+---
+
+## 6. トラブルシューティング
 
 ### 接続エラー (MySQL Access Denied)
 Ops 仮想機（Devop 用 GCE）等から接続する際、`Access denied` エラーが出る場合は、MySQL 内部で対象ユーザー（例: `root`）のリモートアクセス権限が許可されているか確認してください。
