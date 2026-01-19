@@ -1,6 +1,6 @@
 # AI Agent インフラ構成およびデプロイガイド (README)
 
-このリポジトリには、AI Agent システムのインフラ（Terraform）とバックエンド（ASP.NET Core）のソースコードが含まれています。
+このリポジトリには、AI Agent システムのインフラ（Terraform）のソースコードが含まれています。
 
 ## 1. 事前準備 (Manual Setup)
 
@@ -11,32 +11,30 @@
 
 | シークレット名 | 内容 |
 | :--- | :--- |
-| `ai_agent_db_password` | AI Agent 専用データベースユーザーのパスワード |
+| **`asahi-client-secret`** | **Keycloak クライアントの Client Secret** |
+| `asahi_db_password` | Asahi 専用データベースユーザーのパスワード |
 | `keycloak_admin_password` | Keycloak 管理画面の管理者パスワード |
 | `keycloak_db_password` | Keycloak 用データベースユーザーのパスワード |
 | `mysql_admin_password` | MySQL インスタンス全体の管理者 (root) パスワード |
 | `pg_admin_password` | PostgreSQL 管理者パスワード |
 
-### B. ドメインと DNS
-* Terraform 実行後、作成された外部静的 IP アドレスを確認し、ドメインの **A レコード** をその IP に設定してください。
-* SSL 証明書のプロビジョニングには、DNS の伝播後に時間がかかる場合があります。
-
 ---
 
 ## 2. 権限設定 (IAM Roles)
 
-デプロイと実行のために、以下の 2 つのサービスアカウントに適切な権限を付与する必要があります。
+各サービスおよびデプロイフローを正常に動作させるため、以下のサービスアカウントに適切なロールを付与してください。
 
-### ① Cloud Build 実行用サービスアカウント
-**アカウント名**: `asahi-${var.env_name}-sa-cloud-build@{var.project_id}.iam.gserviceaccount.com`
-
-このアカウントは Terraform の実行およびアーティファクトのビルドに使用されます。以下のロールを付与してください：
+### ① Cloud Build 実行用サービスアカウント (デプロイ用)
+**アカウント名**: `asahi-${var.env_name}-sa-cloud-build@${var.project_id}.iam.gserviceaccount.com`
+**付与対象**: Cloud Build トリガー
+**付与ロール**:
+* `roles/serviceusage.serviceUsageAdmin`
 * `roles/artifactregistry.writer`
-* `roles/cloudbuild.builds.editor`
 * `roles/cloudsql.admin`
-* `roles/compute.admin`
 * `roles/compute.instanceAdmin.v1`
-* `roles/iam.serviceAccountAdmin`
+* `roles/compute.networkAdmin`
+* `roles/compute.securityAdmin`
+* `roles/compute.loadBalancerAdmin`
 * `roles/iam.serviceAccountUser`
 * `roles/iam.serviceAccountViewer`
 * `roles/iap.tunnelResourceAccessor`
@@ -48,42 +46,62 @@
 * `roles/storage.objectAdmin`
 * `roles/vpcaccess.admin`
 
-### ② Cloud Run 実行用サービスアカウント
-**アカウント名**: `asahi-${var.env_name}-sa-cloud-run@{var.project_id}.iam.gserviceaccount.com`
-
-このアカウントは Cloud Run サービスが実行時にリソースへアクセスするために使用されます：
+### ② Cloud Run 実行用サービスアカウント (ランタイム用)
+**アカウント名**: `asahi-${var.env_name}-sa-cloud-run@${var.project_id}.iam.gserviceaccount.com`
+**付与対象**: 全ての Cloud Run タスク
+**付与ロール**:
 * `roles/run.invoker`
-* `roles/cloudsql.client` (Unix Socket 経由の接続に必須)
-* `roles/secretmanager.secretAccessor` (データベースパスワード等の取得)
+* `roles/cloudsql.client`
+* `roles/secretmanager.secretAccessor`
+
+### ③ Devop用 GCE インスタンスサービスアカウント (運用操作用)
+**アカウント名**: `asahi-${var.env_name}-sa-gce@${var.project_id}.iam.gserviceaccount.com`
+**付与対象**: Devop 用 GCE インスタンス
+**付与ロール**:
+* `roles/secretmanager.secretAccessor`
+* `roles/cloudsql.client`
+* `roles/logging.logWriter`
 
 ---
 
 ## 3. Cloud Build トリガーの設定
 
-1. **GitHub/GitLab 連携**: Google Cloud コンソールの Cloud Build ページでリポジトリを接続します。
-2. **トリガー作成**:
-   - **イベント**: ブランチへのプッシュ
-   - **ブランチ**: `^main$`
-   - **形式**: `Cloud Build 構成ファイル (yaml)`
-   - **ファイルパス**: `cloudbuild.yaml`
-3. **代入変数 (Substitutions)**:
-   - `_REGION`: `asia-northeast1`
-   - `_RESOURCE_PREFIX`: `asahi-dev`
+### A. GitHub 連携 (リポジトリ接続)
+Cloud Build が GitHub からソースコードを取得できるように、以下の手順で接続を作成します。
+
+1.  Google Cloud コンソールの **[Cloud Build] > [リポジトリ]** ページに移動します。
+2.  **[接続を作成]** をクリックします。
+3.  **[GitHub (Cloud Build GitHub App)]** を選択し、[次へ] をクリックします。
+4.  GitHub への認証画面が表示されるので、承認します。
+5.  接続する GitHub アカウントまたは組織を選択し、**[Google Cloud Build をインストール]** をクリックして、対象のリポジトリを選択します。
+6.  接続が完了すると、リポジトリ一覧に表示されます。
+
+### B. トリガーの作成
+1.  **[Cloud Build] > [トリガー]** ページに移動し、**[トリガーを作成]** をクリックします。
+2.  **名前**: `asahi-breweries-infra-${var.env_name}`
+3.  **イベント**: `ブランチにプッシュする`
+4.  **リポジトリ**: 上記の手順で接続したリポジトリを選択します。
+5.  **ブランチ**: `^${var.env_name}$`
+6.  **形式**: `Cloud Build 構成ファイル (yaml)`
+7.  **ファイルパス**: `cloudbuild.yaml`
 
 ---
 
-## 4. バックエンドの実装に関する注意 (C# / .NET 8)
+## 4. 環境構築後の作業 (Post-Deployment Steps)
 
-### データベース接続 (MySqlConnector)
-Cloud Run から Cloud SQL へ Unix Socket 経由で接続する場合、`MySqlConnector` を使用し、以下の形式で `ConnectionString` を構築してください：
+インフラのデプロイ完了後、システムの稼働を完了させるために以下の作業を順に実施してください。
 
-```csharp
-var builder = new MySqlConnectionStringBuilder
-{
-    Server = $"/cloudsql/{dbConnName}", // project:region:instance
-    UserID = dbUser,
-    Password = dbPass,
-    Database = dbName,
-    SslMode = MySqlSslMode.None,
-    ConnectionProtocol = MySqlConnectionProtocol.UnixSocket // 必須設定
-};
+1.  **認証サービスのビルド**: Cloud Build で `asahi-breweries-auth-service` の対象環境のトリガーを実行し、Docker イメージの更新とデプロイを行います。
+2.  **Keycloak の設定**: `asahi-breweries-auth-service` リポジトリの README に従い、Keycloak 管理画面にログインして `asahi-realm`、`asahi-client`、および `asahi-user` を作成します。
+3.  **Secret の更新**: 新しく作成した `asahi-client` の **Client Secret** の値を確認し、Secret Manager の `asahi-client-secret` の値を最新のシークレット値で更新します。
+4.  **認証プロキシのビルド**: Cloud Build で `asahi-breweries-auth-proxy` の対象環境のトリガーを実行し、最新のシークレット値を反映させたイメージの更新とデプロイを行います。
+
+---
+
+## 5. トラブルシューティング
+
+### 接続エラー (MySQL Access Denied)
+Ops 仮想機（Devop 用 GCE）等から接続する際、`Access denied` エラーが出る場合は、MySQL 内部で対象ユーザー（例: `root`）のリモートアクセス権限が許可されているか確認してください。
+
+### ネットワーク方式
+本構成では **PSA (Private Services Access)** を利用しています。Cloud Build 用サービスアカウントに `roles/servicenetworking.networksAdmin` が付与されていることを確認してください。
