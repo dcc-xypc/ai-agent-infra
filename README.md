@@ -18,6 +18,41 @@
 | `mysql_admin_password` | MySQL インスタンス全体の管理者 (root) パスワード |
 | `pg_admin_password` | PostgreSQL 管理者パスワード |
 
+### B. 運用操作用サービスアカウントの作成と設定 (Manual Setup)
+
+組織のセキュリティポリシー（外部ドメインによる直接 SSH の制限など）に対応するため、外部ユーザーは「サービスアカウントの借用 (Impersonation)」を利用して VM に接続します。以下の手順で専用のサービスアカウントを作成し、適切な権限を付与してください。
+
+#### 1. 運用専用サービスアカウント (Ops SA) の作成
+* **アカウント名**: `asahi-${var.env_name}-sa-vm-devops-vm`
+* **用途**: IAP トンネルの確立、および OS Login を利用した VM へのログイン実行用。
+
+#### 2. サービスアカウント自体への権限付与 (IAM Roles)
+作成した **サービスアカウント（SA）に対して**、プロジェクトレベルで以下のロールを付与します。これらが不足していると、接続時に `Permission denied (publickey)` エラーが発生します。
+
+| ロール名 | ロール ID | 用途 |
+| :--- | :--- | :--- |
+| **IAP ユーザー** | `roles/iap.tunnelResourceAccessor` | IAP トンネル経由のトラフィック転送を許可 |
+| **Compute OS Admin ログイン** | `roles/compute.osAdminLogin` | OS Login による sudo 権限付きログインを許可 |
+| **サービス アカウント ユーザー** | `roles/iam.serviceAccountUser` | **重要**: SA が VM のアイデンティティとして動作することを許可 |
+
+#### 3. 外部ユーザーへの借用権限の付与
+外部パートナー（例：`external.user@xxxx.com`）がこの SA を利用できるよう、**サービスアカウントのリソース単位**で以下のロールを付与してください。
+
+* **対象リソース**: 上記で作成した `asahi-${var.env_name}-sa-vm-devops-vm`
+* **付与ロール**: `roles/iam.serviceAccountTokenCreator` (サービス アカウント トークン作成者)
+* **用途**: 外部ユーザーがこの SA の一時的な認証トークンを生成し、SA の ID を借用することを許可します。
+
+### 4. 運用者向け SSH 接続手順
+
+セットアップ完了後、運用担当者はローカル端末または Cloud Shell から以下のコマンドを使用して接続します。
+
+```bash
+gcloud compute ssh [VM_NAME] \
+    --project=${var.project_id} \
+    --zone=${var.zone} \
+    --tunnel-through-iap \
+    --impersonate-service-account="asahi-${var.env_name}-sa-vm-devops-vm@${var.project_id}.iam.gserviceaccount.com"
+```
 ---
 
 ## 2. 権限設定 (IAM Roles)
