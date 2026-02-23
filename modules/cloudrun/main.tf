@@ -340,6 +340,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_CLIENT_ID" 
         value = var.oauth2_proxy_client_id 
       }
+      env {
+        name  = "OAUTH2_PROXY_OIDC_EXTRA_PARAMS"
+        value = "client_id=${var.oauth2_proxy_client_id}" 
+      }
       env { 
         name  = "OAUTH2_PROXY_CLIENT_SECRET" 
         value = var.oauth2_proxy_client_secret 
@@ -354,7 +358,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_WHITELIST_DOMAINS"
-        value = ".${var.auth_domain}"
+        value = ".${var.auth_domain},.${var.tenant_domain}"
       }
       env {
         name  = "OAUTH2_PROXY_SKIP_AUTH_STRIP_HEADERS"
@@ -397,6 +401,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_REDIRECT_URL"
         value = "https://${var.tenant_domain}/oauth2/callback"
       }
+      env {
+        name  = "OAUTH2_PROXY_END_SESSION_ENDPOINT"
+        value = "https://${var.auth_domain}/realms/${var.oauth2_proxy_realm_name}/protocol/openid-connect/logout"
+      }
       # 1. 解决 403 问题：跳过 Proxy 默认登录页，强制重定向到 Keycloak
       env {
         name  = "OAUTH2_PROXY_SKIP_PROVIDER_BUTTON"
@@ -411,10 +419,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
 
       # 3. 设置 Cookie 作用域，确保在整个租户域名下有效
-      #env {
-      #  name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
-      #  value = var.tenant_domain
-      #}
+      env {
+        name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
+        value = var.tenant_domain
+      }
       env {
         name  = "OAUTH2_PROXY_COOKIE_PATH"
         value = "/"
