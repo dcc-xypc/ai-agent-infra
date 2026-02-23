@@ -20,9 +20,9 @@ default_placeholder_image  = "gcr.io/cloudrun/hello"
 oauth2_proxy_image_gcr     = ""
 keycloak_admin_name        = "kcadmin"
 keycloak_admin_password    = "keycloak_admin_password"
-oauth2_proxy_realm_name    = "ai-agent"
+oauth2_proxy_realm_name    = "ai-agent-realm"
 oauth2_proxy_client_id     = "ai-agent-client"
-oauth2_proxy_client_secret = "2pky4BCjUqyZSJisDdDJhY5QyAhyPJKC"
+oauth2_proxy_client_secret = "OtMNoI3SaFqIbmqnEs2iliA7bbQkbz88"
 oauth2_proxy_cookie_secret = "5IW9m4YHDWHf8AkuCzU_3b1c1Q9NoLlCJW0lKxgvgXE="
 
 # 4. GitHub / CI/CD
