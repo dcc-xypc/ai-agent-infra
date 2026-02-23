@@ -41,7 +41,7 @@ subnet_cidr_sql          = "10.1.0.0/20"
 allowed_source_ip_ranges = ["13.228.59.248/32", "13.230.154.173/32", "13.231.149.250/32", "218.69.11.110/32"]
 enable_ops_nat           = true
 tenant_domain            = "tenant1.ai-agent.tcic-cloud.com"
-auth_domain              = "auth.ai-agent.tcic-cloud.com"
+auth_domain              = "kc.ai-agent.tcic-cloud.com"
 
 # 6. スペック (开发环境配置)
 cloud_run_specs = {
