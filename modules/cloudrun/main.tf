@@ -344,6 +344,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_OIDC_EXTRA_PARAMS"
         value = "client_id=${var.oauth2_proxy_client_id}" 
       }
+      env {
+        name  = "OAUTH2_PROXY_PASS_ID_TOKEN"
+        value = "true"
+      }
       env { 
         name  = "OAUTH2_PROXY_CLIENT_SECRET" 
         value = var.oauth2_proxy_client_secret 
