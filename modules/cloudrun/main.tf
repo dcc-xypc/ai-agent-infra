@@ -406,6 +406,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         value = "https://${var.tenant_domain}/oauth2/callback"
       }
       env {
+        name  = "OAUTH2_PROXY_BACKEND_LOGOUT_URL"
+        value = "https://${var.auth_domain}/realms/${var.oauth2_proxy_realm_name}/protocol/openid-connect/logout?id_token_hint={id_token}&post_logout_redirect_uri=https://${var.tenant_domain}/oauth2/start"
+      }
+      env {
         name  = "OAUTH2_PROXY_SKIP_LOGOUT_SCREEN"
         value = "true"
       }
