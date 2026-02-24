@@ -362,7 +362,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_WHITELIST_DOMAINS"
-        value = ".${var.auth_domain},.${var.tenant_domain}"
+        value = "${var.auth_domain},${var.tenant_domain}"
       }
       env {
         name  = "OAUTH2_PROXY_SKIP_AUTH_STRIP_HEADERS"
