@@ -409,6 +409,10 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
         name  = "OAUTH2_PROXY_END_SESSION_ENDPOINT"
         value = "https://${var.auth_domain}/realms/${var.oauth2_proxy_realm_name}/protocol/openid-connect/logout"
       }
+      env {
+        name  = "OAUTH2_PROXY_SKIP_LOGOUT_SCREEN"
+        value = "true"
+      }
       # 1. 解决 403 问题：跳过 Proxy 默认登录页，强制重定向到 Keycloak
       env {
         name  = "OAUTH2_PROXY_SKIP_PROVIDER_BUTTON"
