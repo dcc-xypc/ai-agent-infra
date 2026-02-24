@@ -342,7 +342,7 @@ resource "google_cloud_run_v2_service" "oauth2_proxy_app" {
       }
       env {
         name  = "OAUTH2_PROXY_OIDC_EXTRA_PARAMS"
-        value = "client_id=${var.oauth2_proxy_client_id}" 
+        value = "client_id=${var.oauth2_proxy_client_id},post_logout_redirect_uri=https://${var.tenant_domain}/oauth2/start"
       }
       env {
         name  = "OAUTH2_PROXY_PASS_ID_TOKEN"
